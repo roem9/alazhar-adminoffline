@@ -82,7 +82,7 @@ class Kelas extends CI_CONTROLLER{
             $link = $this->Main_model->get_all("pelajaran_kelas", ["program" => $data['program']]);
             foreach ($link as $i => $link) {
                 $data['link'][$i]['pelajaran'] = $link['pelajaran'];
-                $data['link'][$i]['link'] = "localhost/ci/inputpesertaoffline/nilai/input/".MD5($id)."/".MD5($link['pelajaran']);
+                $data['link'][$i]['link'] = "https://peserta.alazharpare.com/nilai/input/".MD5($id)."/".MD5($link['pelajaran']);
             }
 
             echo json_encode($data);
