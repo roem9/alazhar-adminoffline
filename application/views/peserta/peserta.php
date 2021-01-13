@@ -18,22 +18,23 @@
                     </div>
                 </div>
             </div>
-            <div class="card shadow mb-4" style="max-width: 1000px">
+            <div class="card shadow mb-4" style="max-width: 1200px">
                 <div class="card-body">
                     <div id="reload">
                         <table id="dataTable" class="table table-sm cus-font">
                             <thead>
                                 <?php if($konfirm == 1):?>
                                     <tr>
-                                        <th width="5%">No</th>
-                                        <th width="10%">Tgl Daftar</th>
-                                        <th width="10%"><center>ID</center></th>
+                                        <th width="3%">No</th>
+                                        <th width="8%">Tgl Daftar</th>
+                                        <th width="7%"><center>ID</center></th>
                                         <th width="">Nama</th>
-                                        <th width="10%"><center>Pembayaran</center></th>
-                                        <th width="15%"><center>Checklist</center></th>
-                                        <th width="5%">Kelas</th>
-                                        <th width=7%><center>Wl</center></th>
-                                        <th width=7%>Detail</th>
+                                        <th width="6%"><center>Pembayaran</center></th>
+                                        <th width="12%"><center>Checklist</center></th>
+                                        <th width="6%">Kelas</th>
+                                        <th width=5%><center>Wl</center></th>
+                                        <th width=5%>Detail</th>
+                                        <th width=5%><center>Salin</center></th>
                                     </tr>
                                 <?php else :?>
                                     <tr>
@@ -67,13 +68,13 @@
                     <div class="card-header">
                         <ul class="nav nav-tabs card-header-tabs">
                             <li class="nav-item">
-                                <a href="#" class='nav-link active' id="btn-form-1"><i class="fas fa-user"></i></a>
+                                <a href="javascript:void(0)" class='nav-link active' id="btn-form-1"><i class="fas fa-user"></i></a>
                             </li>
                             <li class="nav-item">
-                                <a href="#" class='nav-link' id="btn-form-2"><i class="fas fa-book"></i></a>
+                                <a href="javascript:void(0)" class='nav-link' id="btn-form-2"><i class="fas fa-book"></i></a>
                             </li>
                             <li class="nav-item">
-                                <a href="#" class='nav-link' id="btn-form-3">Tambah Kelas/WL</a>
+                                <a href="javascript:void(0)" class='nav-link' id="btn-form-3">Tambah Kelas/WL</a>
                             </li>
                         </ul>
                     </div>
@@ -402,7 +403,7 @@
         "columnDefs": [
         { 
             <?php if($konfirm == 1):?>
-                "targets": [0, 4, 5, 6, 7, 8], //first column / numbering column
+                "targets": [0, 4, 5, 6, 7, 8, 9], //first column / numbering column
             <?php else :?>
                 "targets": [0, 3], //first column / numbering column
             <?php endif ;?>
@@ -661,50 +662,10 @@
         })
     // hapus kelas
 
-    $("#dataTable").on("click", '#followUp1', function(){
-        let data = $(this).data('id');
-        data = data.split("|");
-        let id = data[0];
-        let nama = data[1];
-        let url = data[2];
-        let followup = data[3];
-
-        if(confirm("Kirim follow up pertama ke "+nama+"?")){
-            $.ajax({
-                url: "<?= base_url()?>peserta/add_followup",
-                dataType: "JSON",
-                type: "POST",
-                data: {id: id, followup: followup},
-                success: function(data){
-                    reload_table();
-                    window.open(url, '_blank');
-                }
-            })
-        }
-        return false
-    })
-    
-    $("#dataTable").on("click", '#followUp2', function(){
-        let data = $(this).data('id');
-        data = data.split("|");
-        let id = data[0];
-        let nama = data[1];
-        let url = data[2];
-        let followup = data[3];
-
-        if(confirm("Kirim follow up kedua ke "+nama+"?")){
-            $.ajax({
-                url: "<?= base_url()?>peserta/add_followup",
-                dataType: "JSON",
-                type: "POST",
-                data: {id: id, followup: followup},
-                success: function(data){
-                    reload_table();
-                    window.open(url, '_blank');
-                }
-            })
-        }
-        return false
+    $("#dataTable").on("click", ".salin", function(){
+        const id = $(this).data('id');
+        console.log(id)
+        salin(id)
     })
 
     // detail
@@ -727,6 +688,39 @@
     // function 
         function reload_table(){
             table.ajax.reload(null,false); //reload datatable ajax 
+        }
+
+        function salin(id){
+            $.ajax({
+                url : "<?=base_url()?>peserta/get_detail_peserta",
+                method : "POST",
+                data : {id : id},
+                async : true,
+                dataType : 'json',
+                success : function(data){
+                    // console.log(data)
+                    // $("#modalAddTitle").html(data.nama_indo)
+                    // $('#no_peserta_add').val(data.no_peserta)
+                    // $('#tgl_daftar_add').val(data.tgl_daftar)
+                    $('#nik_add').val(data.nik)
+                    $('#nama_indo_add').val(data.nama_indo)
+                    $('#nama_arab_add').val(data.nama_arab)
+                    $('#t4_lahir_indo_add').val(data.t4_lahir_indo)
+                    $('#t4_lahir_arab_add').val(data.t4_lahir_arab)
+                    $('#tgl_lahir_add').val(data.tgl_lahir)
+                    $('#desa_kel_indo_add').val(data.desa_kel_indo)
+                    $('#desa_kel_arab_add').val(data.desa_kel_arab)
+                    $('#kec_indo_add').val(data.kec_indo)
+                    $('#kec_arab_add').val(data.kec_arab)
+                    $('#kota_kab_indo_add').val(data.kota_kab_indo)
+                    $('#kota_kab_arab_add').val(data.kota_kab_arab)
+                    $('#no_wa_add').val(data.no_wa)
+                    // $('#pembayaran_add').val(formatRupiah(data.pembayaran, "Rp"))
+                    // $('#detail_pembayaran_add').val(data.detail_pembayaran)
+                    $('#email_add').val(data.email)
+                    // $("input[name='id_peserta']").val(data.id_peserta)
+                }
+            })
         }
 
         function detail(id){
@@ -765,11 +759,11 @@
                     if(data.user){
                         array = data.user;
                         array.forEach((user, i) => {
-                            if(user.buku == 0) btnBuku = `<a href="#" id="buku" class="btn btn-sm btn-outline-primary" data-id="`+user.id+`|`+data.nama_indo+`|`+user.kelas.program+`|`+user.id_peserta+`"><i class="fa fa-book"></i></a>`;
-                            else btnBuku = `<a href="#" class="btn btn-sm btn-primary"><i class="fa fa-book"></i></a>`;
+                            if(user.buku == 0) btnBuku = `<a href="javascript:void(0)" id="buku" class="btn btn-sm btn-outline-primary" data-id="`+user.id+`|`+data.nama_indo+`|`+user.kelas.program+`|`+user.id_peserta+`"><i class="fa fa-book"></i></a>`;
+                            else btnBuku = `<a href="javascript:void(0)" class="btn btn-sm btn-primary"><i class="fa fa-book"></i></a>`;
                             html += `<li class="list-group-item d-flex justify-content-between">
                                 <span>
-                                    <a href="#" id="delete_wl" class="mr-1" data-id="`+user.id+`"><i class="fa fa-minus-circle text-danger"></i></a>
+                                    <a href="javascript:void(0)" id="delete_wl" class="mr-1" data-id="`+user.id+`"><i class="fa fa-minus-circle text-danger"></i></a>
                                     `+user.kelas.nama_kelas+`
                                 </span>
                                 <span>
@@ -791,7 +785,7 @@
                         array.forEach((user, i) => {
                             html += `<li class="list-group-item d-flex justify-content-between">
                                 <span>
-                                    <a href="#" id="delete_wl" class="mr-1" data-id="`+user.id+`"><i class="fa fa-minus-circle text-danger"></i></a>
+                                    <a href="javascript:void(0)" id="delete_wl" class="mr-1" data-id="`+user.id+`"><i class="fa fa-minus-circle text-danger"></i></a>
                                     `+user.program+`
                                 </span>
                                 <span>

@@ -19,7 +19,7 @@ class Syahadah extends CI_Controller {
     }
 
     public function kelas($id_kelas){
-        $peserta = $this->Main_model->get_all("kelas_peserta", ["MD5(id_kelas)" => $id_kelas]);
+        $peserta = $this->Main_model->get_all("kelas_peserta", ["MD5(id_kelas)" => $id_kelas, "no_syahadah != " => 0]);
         $data['kelas'] = $this->Main_model->get_one("kelas", ["MD5(id_kelas)" => $id_kelas]);
         $data['kelas']['tgl_selesai_hijriah'] = $this->tgl_hijriah($data['kelas']['tgl_selesai']);
         $data['kelas']['tgl_mulai'] = $this->tgl_masehi($data['kelas']['tgl_mulai']);
@@ -27,11 +27,13 @@ class Syahadah extends CI_Controller {
         foreach ($peserta as $i => $peserta) {
             $dataPeserta = $this->Main_model->get_one("peserta", ["id_peserta" => $peserta['id_peserta']]);
             $data['peserta'][$i] = $dataPeserta;
+            
+            $data['peserta'][$i]['tgl_lahir'] = $this->tgl_masehi($data['peserta'][$i]['tgl_lahir']);
+
             $data['peserta'][$i]['syahadah'] = $peserta;
             $data['peserta'][$i]['syahadah']['nomor'] = $this->angka_arab($peserta['no_syahadah'])."/أز/".$this->angka_arab($peserta['tahun']);
 
-            // $nilaiPeserta = $this->Main_model->get_all("nilai_peserta", ["id_peserta" => $peserta['id_peserta'], "id_kelas" => $peserta['id_kelas']]);
-            if($data['kelas']['program'] == "Full Time 1" || $data['kelas']['program'] == "Full Time 2" || $data['kelas']['program'] == "Full Time 3"){
+            if($data['kelas']['program'] == "Full Time 1" || $data['kelas']['program'] == "Full Time 2" || $data['kelas']['program'] == "Full Time 3" || $data['kelas']['program'] == "Usbuain"){
                 $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Muhadatsah", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
                 if($nilai) $data['peserta'][$i]['syahadah']['nilai_muhadatsah'] = $this->angka_arab($nilai['nilai']);
                 else $data['peserta'][$i]['syahadah']['nilai_muhadatsah'] = 0;
@@ -41,15 +43,208 @@ class Syahadah extends CI_Controller {
                 $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Mufrodat", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
                 if($nilai) $data['peserta'][$i]['syahadah']['nilai_mufrodat'] = $this->angka_arab($nilai['nilai']);
                 else $data['peserta'][$i]['syahadah']['nilai_mufrodat'] = 0;
+                
+                $nilai_sertifikat = ($this->angka_indo($data['peserta'][$i]['syahadah']['nilai_muhadatsah']) + $this->angka_indo($data['peserta'][$i]['syahadah']['nilai_qowaid']) + $this->angka_indo($data['peserta'][$i]['syahadah']['nilai_mufrodat'])) / 3;
+    
+                if($nilai_sertifikat >= 90 && $nilai_sertifikat <= 100){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "ممتاز";
+                } else if($nilai_sertifikat >= 80 && $nilai_sertifikat < 90){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "جيد جدا";
+                } else if($nilai_sertifikat >= 70 && $nilai_sertifikat < 79){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "جيد";
+                } else if($nilai_sertifikat >= 60 && $nilai_sertifikat < 70){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "مقبول";
+                } else if($nilai_sertifikat >= 0 && $nilai_sertifikat < 60){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "ضعيف";
+                }
+            } else if($data['kelas']['program'] == "Tamyiz 1&2") {
+                $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Fahmul Qowaid", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+                if($nilai) $data['peserta'][$i]['syahadah']['nilai_fahmulqowaid'] = $this->angka_arab($nilai['nilai']);
+                else $data['peserta'][$i]['syahadah']['nilai_fahmulqowaid'] = 0;
+                $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Tarjamah", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+                if($nilai) $data['peserta'][$i]['syahadah']['nilai_tarjamah'] = $this->angka_arab($nilai['nilai']);
+                else $data['peserta'][$i]['syahadah']['nilai_tarjamah'] = 0;
+                $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Tathbiiqu Atta'liim", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+                if($nilai) $data['peserta'][$i]['syahadah']['nilai_tatbiquttalim'] = $this->angka_arab($nilai['nilai']);
+                else $data['peserta'][$i]['syahadah']['nilai_tatbiquttalim'] = 0;
+                
+                $nilai_sertifikat = ($this->angka_indo($data['peserta'][$i]['syahadah']['nilai_fahmulqowaid']) + $this->angka_indo($data['peserta'][$i]['syahadah']['nilai_tarjamah']) + $this->angka_indo($data['peserta'][$i]['syahadah']['nilai_tatbiquttalim'])) / 3;
+    
+                if($nilai_sertifikat >= 90 && $nilai_sertifikat <= 100){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "ممتاز";
+                } else if($nilai_sertifikat >= 80 && $nilai_sertifikat < 90){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "جيد جدا";
+                } else if($nilai_sertifikat >= 70 && $nilai_sertifikat < 79){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "جيد";
+                } else if($nilai_sertifikat >= 60 && $nilai_sertifikat < 70){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "مقبول";
+                } else if($nilai_sertifikat >= 0 && $nilai_sertifikat < 60){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "ضعيف";
+                }
+            } else if($data['kelas']['program'] == "Tamyiz 3&4") {
+                $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Tarkib", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+                if($nilai) $data['peserta'][$i]['syahadah']['nilai_tarkib'] = $this->angka_arab($nilai['nilai']);
+                else $data['peserta'][$i]['syahadah']['nilai_tarkib'] = 0;
+                $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "I'lal", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+                if($nilai) $data['peserta'][$i]['syahadah']['nilai_ilal'] = $this->angka_arab($nilai['nilai']);
+                else $data['peserta'][$i]['syahadah']['nilai_ilal'] = 0;
+                $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Tarjamah", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+                if($nilai) $data['peserta'][$i]['syahadah']['nilai_tarjamah'] = $this->angka_arab($nilai['nilai']);
+                else $data['peserta'][$i]['syahadah']['nilai_tarjamah'] = 0;
+                
+                $nilai_sertifikat = ($this->angka_indo($data['peserta'][$i]['syahadah']['nilai_tarkib']) + $this->angka_indo($data['peserta'][$i]['syahadah']['nilai_ilal']) + $this->angka_indo($data['peserta'][$i]['syahadah']['nilai_tarjamah'])) / 3;
+    
+                if($nilai_sertifikat >= 90 && $nilai_sertifikat <= 100){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "ممتاز";
+                } else if($nilai_sertifikat >= 80 && $nilai_sertifikat < 90){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "جيد جدا";
+                } else if($nilai_sertifikat >= 70 && $nilai_sertifikat < 79){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "جيد";
+                } else if($nilai_sertifikat >= 60 && $nilai_sertifikat < 70){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "مقبول";
+                } else if($nilai_sertifikat >= 0 && $nilai_sertifikat < 60){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "ضعيف";
+                }
+            } else if($data['kelas']['program'] == "AlMiftah 1") {
+                $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Binaayatul Jumlah", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+                if($nilai) $data['peserta'][$i]['syahadah']['nilai_binayatuljumlah'] = $this->angka_arab($nilai['nilai']);
+                else $data['peserta'][$i]['syahadah']['nilai_binayatuljumlah'] = 0;
+                $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Tarakib", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+                if($nilai) $data['peserta'][$i]['syahadah']['nilai_tarakib'] = $this->angka_arab($nilai['nilai']);
+                else $data['peserta'][$i]['syahadah']['nilai_tarakib'] = 0;
+                
+                $nilai_sertifikat = ($this->angka_indo($data['peserta'][$i]['syahadah']['nilai_binayatuljumlah']) + $this->angka_indo($data['peserta'][$i]['syahadah']['nilai_tarakib'])) / 2;
+    
+                if($nilai_sertifikat >= 90 && $nilai_sertifikat <= 100){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "ممتاز";
+                } else if($nilai_sertifikat >= 80 && $nilai_sertifikat < 90){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "جيد جدا";
+                } else if($nilai_sertifikat >= 70 && $nilai_sertifikat < 79){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "جيد";
+                } else if($nilai_sertifikat >= 60 && $nilai_sertifikat < 70){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "مقبول";
+                } else if($nilai_sertifikat >= 0 && $nilai_sertifikat < 60){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "ضعيف";
+                }
+            } else if($data['kelas']['program'] == "AlMiftah 2") {
+                $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Tahfidzul Andzhima", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+                if($nilai) $data['peserta'][$i]['syahadah']['nilai_tahfidzulandzhima'] = $this->angka_arab($nilai['nilai']);
+                else $data['peserta'][$i]['syahadah']['nilai_tahfidzulandzhima'] = 0;
+                $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Qiroah", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+                if($nilai) $data['peserta'][$i]['syahadah']['nilai_qiroah'] = $this->angka_arab($nilai['nilai']);
+                else $data['peserta'][$i]['syahadah']['nilai_qiroah'] = 0;
+                
+                $nilai_sertifikat = ($this->angka_indo($data['peserta'][$i]['syahadah']['nilai_tahfidzulandzhima']) + $this->angka_indo($data['peserta'][$i]['syahadah']['nilai_qiroah'])) / 2;
+    
+                if($nilai_sertifikat >= 90 && $nilai_sertifikat <= 100){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "ممتاز";
+                } else if($nilai_sertifikat >= 80 && $nilai_sertifikat < 90){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "جيد جدا";
+                } else if($nilai_sertifikat >= 70 && $nilai_sertifikat < 79){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "جيد";
+                } else if($nilai_sertifikat >= 60 && $nilai_sertifikat < 70){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "مقبول";
+                } else if($nilai_sertifikat >= 0 && $nilai_sertifikat < 60){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "ضعيف";
+                }
+            } else if($data['kelas']['program'] == "Timur Tengah 1" || $data['kelas']['program'] == "Timur Tengah 2") {
+                $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Qiroah", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+                if($nilai) $data['peserta'][$i]['syahadah']['nilai_qiroah'] = $this->angka_arab($nilai['nilai']);
+                else $data['peserta'][$i]['syahadah']['nilai_qiroah'] = 0;
+                $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Qowaid", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+                if($nilai) $data['peserta'][$i]['syahadah']['nilai_qowaid'] = $this->angka_arab($nilai['nilai']);
+                else $data['peserta'][$i]['syahadah']['nilai_qowaid'] = 0;
+                $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "TOAFL", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+                if($nilai) $data['peserta'][$i]['syahadah']['nilai_toafl'] = $this->angka_arab($nilai['nilai']);
+                else $data['peserta'][$i]['syahadah']['nilai_toafl'] = 0;
+                
+                $nilai_sertifikat = ($this->angka_indo($data['peserta'][$i]['syahadah']['nilai_qiroah']) + $this->angka_indo($data['peserta'][$i]['syahadah']['nilai_qowaid']) + $this->angka_indo($data['peserta'][$i]['syahadah']['nilai_toafl'])) / 3;
+    
+                if($nilai_sertifikat >= 90 && $nilai_sertifikat <= 100){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "ممتاز";
+                } else if($nilai_sertifikat >= 80 && $nilai_sertifikat < 90){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "جيد جدا";
+                } else if($nilai_sertifikat >= 70 && $nilai_sertifikat < 79){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "جيد";
+                } else if($nilai_sertifikat >= 60 && $nilai_sertifikat < 70){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "مقبول";
+                } else if($nilai_sertifikat >= 0 && $nilai_sertifikat < 60){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "ضعيف";
+                }
+            } else if($data['kelas']['program'] == "Manhaji") {
+                $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Fahmul Qowaid", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+                if($nilai) $data['peserta'][$i]['syahadah']['nilai_fahmulqowaid'] = $this->angka_arab($nilai['nilai']);
+                else $data['peserta'][$i]['syahadah']['nilai_fahmulqowaid'] = 0;
+                $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Adad Ma'dud", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+                if($nilai) $data['peserta'][$i]['syahadah']['nilai_adadmadud'] = $this->angka_arab($nilai['nilai']);
+                else $data['peserta'][$i]['syahadah']['nilai_adadmadud'] = 0;
+                
+                $nilai_sertifikat = ($this->angka_indo($data['peserta'][$i]['syahadah']['nilai_fahmulqowaid']) + $this->angka_indo($data['peserta'][$i]['syahadah']['nilai_adadmadud'])) / 2;
+    
+                if($nilai_sertifikat >= 90 && $nilai_sertifikat <= 100){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "ممتاز";
+                } else if($nilai_sertifikat >= 80 && $nilai_sertifikat < 90){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "جيد جدا";
+                } else if($nilai_sertifikat >= 70 && $nilai_sertifikat < 79){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "جيد";
+                } else if($nilai_sertifikat >= 60 && $nilai_sertifikat < 70){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "مقبول";
+                } else if($nilai_sertifikat >= 0 && $nilai_sertifikat < 60){
+                    $data['peserta'][$i]['syahadah']['nilai'] = "ضعيف";
+                }
             }
+            
+            // ss
+            $program = $this->Main_model->get_one("program", ["program" => $peserta['program']]);
+            $data['peserta'][$i]['syahadah']['program_arab'] = $program['program_arab'];
         }
 
-        var_dump($data);
+        // $this->load->view("pages/syahadah/syahadah-kelas", $data);
+        $defaultConfig = (new Mpdf\Config\ConfigVariables())->getDefaults();
+        $fontDirs = $defaultConfig['fontDir'];
+
+        $defaultFontConfig = (new Mpdf\Config\FontVariables())->getDefaults();
+        $fontData = $defaultFontConfig['fontdata'];
+
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [210, 330], 'orientation' => 'P', 'margin_left' => '0', 'margin_right' => '0', 'margin_top' => '0', 'margin_bottom' => '0', 'fontDir' => array_merge($fontDirs, [__DIR__ . '/assets/font',]),
+        'fontdata' => $fontData + [
+            'arab' => [
+                'R' => 'trado.ttf',
+                'useOTL' => 0xFF,
+                'useKashida' => 75,
+            ],
+            'mcs' => [
+                'R' => 'mcs.ttf',
+                // mcs_erwah.ttf
+                // 'useOTL' => 0xFF,
+                'useKashida' => 75,
+            ]
+        ], 
+        ]);
+
+        $mpdf->allow_charset_conversion = true;
+        
+        $mpdf->text_input_as_HTML = true; //(default = false)
+
+        foreach ($data['peserta'] as $i => $peserta) {
+            // if($peserta['nama_indo'] == "Muhammad Rum"){
+                $mpdf->AddPage();
+                $print = $this->load->view("pages/syahadah/syahadah-peserta", ["peserta" => $peserta, "kelas" => $data['kelas']], TRUE);
+                $mpdf->WriteHTML($print);
+                $mpdf->AddPage();
+                $print = $this->load->view("pages/syahadah/nilai", ["peserta" => $peserta, "kelas" => $data['kelas']], TRUE);
+                $mpdf->WriteHTML($print);
+            // }
+        }
+        $mpdf->Output();
     }
 
-    public function peserta($id){
-        $peserta = $this->Main_model->get_one("kelas_peserta", ["MD5(id)" => $id]);
+    public function peserta($id, $id_kelas){
+        $peserta = $this->Main_model->get_one("kelas_peserta", ["MD5(id)" => $id, "MD5(id_kelas)" => $id_kelas]);
         $data['peserta'] = $this->Main_model->get_one("peserta", ["id_peserta" => $peserta['id_peserta']]);
+        // ss
+        $data['peserta']['tgl_lahir'] = $this->tgl_masehi($data['peserta']['tgl_lahir']);
+
         $data['peserta']['syahadah'] = $peserta;
         $data['peserta']['syahadah']['nomor'] = $this->angka_arab($peserta['no_syahadah'])."/أز/".$this->angka_arab($peserta['tahun']);
         $data['kelas'] = $this->Main_model->get_one("kelas", ["id_kelas" => $peserta['id_kelas']]);
@@ -57,7 +252,7 @@ class Syahadah extends CI_Controller {
         $data['kelas']['tgl_mulai'] = $this->tgl_masehi($data['kelas']['tgl_mulai']);
         $data['kelas']['tgl_selesai'] = $this->tgl_masehi($data['kelas']['tgl_selesai']);
 
-        if($data['kelas']['program'] == "Full Time 1" || $data['kelas']['program'] == "Full Time 2" || $data['kelas']['program'] == "Full Time 3"){
+        if($data['kelas']['program'] == "Full Time 1" || $data['kelas']['program'] == "Full Time 2" || $data['kelas']['program'] == "Full Time 3" || $data['kelas']['program'] == "Usbuain"){
             $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Muhadatsah", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
             if($nilai) $data['peserta']['syahadah']['nilai_muhadatsah'] = $this->angka_arab($nilai['nilai']);
             else $data['peserta']['syahadah']['nilai_muhadatsah'] = 0;
@@ -67,9 +262,198 @@ class Syahadah extends CI_Controller {
             $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Mufrodat", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
             if($nilai) $data['peserta']['syahadah']['nilai_mufrodat'] = $this->angka_arab($nilai['nilai']);
             else $data['peserta']['syahadah']['nilai_mufrodat'] = 0;
+            
+            $nilai_sertifikat = ($this->angka_indo($data['peserta']['syahadah']['nilai_muhadatsah']) + $this->angka_indo($data['peserta']['syahadah']['nilai_qowaid']) + $this->angka_indo($data['peserta']['syahadah']['nilai_mufrodat'])) / 3;
+
+            if($nilai_sertifikat >= 90 && $nilai_sertifikat <= 100){
+                $data['peserta']['syahadah']['nilai'] = "ممتاز";
+            } else if($nilai_sertifikat >= 80 && $nilai_sertifikat < 90){
+                $data['peserta']['syahadah']['nilai'] = "جيد جدا";
+            } else if($nilai_sertifikat >= 70 && $nilai_sertifikat < 79){
+                $data['peserta']['syahadah']['nilai'] = "جيد";
+            } else if($nilai_sertifikat >= 60 && $nilai_sertifikat < 70){
+                $data['peserta']['syahadah']['nilai'] = "مقبول";
+            } else if($nilai_sertifikat >= 0 && $nilai_sertifikat < 60){
+                $data['peserta']['syahadah']['nilai'] = "ضعيف";
+            }
+        } else if($data['kelas']['program'] == "Tamyiz 1&2") {
+            $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Fahmul Qowaid", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+            if($nilai) $data['peserta']['syahadah']['nilai_fahmulqowaid'] = $this->angka_arab($nilai['nilai']);
+            else $data['peserta']['syahadah']['nilai_fahmulqowaid'] = 0;
+            $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Tarjamah", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+            if($nilai) $data['peserta']['syahadah']['nilai_tarjamah'] = $this->angka_arab($nilai['nilai']);
+            else $data['peserta']['syahadah']['nilai_tarjamah'] = 0;
+            $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Tathbiiqu Atta'liim", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+            if($nilai) $data['peserta']['syahadah']['nilai_tatbiquttalim'] = $this->angka_arab($nilai['nilai']);
+            else $data['peserta']['syahadah']['nilai_tatbiquttalim'] = 0;
+            
+            $nilai_sertifikat = ($this->angka_indo($data['peserta']['syahadah']['nilai_fahmulqowaid']) + $this->angka_indo($data['peserta']['syahadah']['nilai_tarjamah']) + $this->angka_indo($data['peserta']['syahadah']['nilai_tatbiquttalim'])) / 3;
+
+            if($nilai_sertifikat >= 90 && $nilai_sertifikat <= 100){
+                $data['peserta']['syahadah']['nilai'] = "ممتاز";
+            } else if($nilai_sertifikat >= 80 && $nilai_sertifikat < 90){
+                $data['peserta']['syahadah']['nilai'] = "جيد جدا";
+            } else if($nilai_sertifikat >= 70 && $nilai_sertifikat < 79){
+                $data['peserta']['syahadah']['nilai'] = "جيد";
+            } else if($nilai_sertifikat >= 60 && $nilai_sertifikat < 70){
+                $data['peserta']['syahadah']['nilai'] = "مقبول";
+            } else if($nilai_sertifikat >= 0 && $nilai_sertifikat < 60){
+                $data['peserta']['syahadah']['nilai'] = "ضعيف";
+            }
+        } else if($data['kelas']['program'] == "Tamyiz 3&4") {
+            $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Tarkib", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+            if($nilai) $data['peserta']['syahadah']['nilai_tarkib'] = $this->angka_arab($nilai['nilai']);
+            else $data['peserta']['syahadah']['nilai_tarkib'] = 0;
+            $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "I'lal", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+            if($nilai) $data['peserta']['syahadah']['nilai_ilal'] = $this->angka_arab($nilai['nilai']);
+            else $data['peserta']['syahadah']['nilai_ilal'] = 0;
+            $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Tarjamah", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+            if($nilai) $data['peserta']['syahadah']['nilai_tarjamah'] = $this->angka_arab($nilai['nilai']);
+            else $data['peserta']['syahadah']['nilai_tarjamah'] = 0;
+            
+            $nilai_sertifikat = ($this->angka_indo($data['peserta']['syahadah']['nilai_tarkib']) + $this->angka_indo($data['peserta']['syahadah']['nilai_ilal']) + $this->angka_indo($data['peserta']['syahadah']['nilai_tarjamah'])) / 3;
+
+            if($nilai_sertifikat >= 90 && $nilai_sertifikat <= 100){
+                $data['peserta']['syahadah']['nilai'] = "ممتاز";
+            } else if($nilai_sertifikat >= 80 && $nilai_sertifikat < 90){
+                $data['peserta']['syahadah']['nilai'] = "جيد جدا";
+            } else if($nilai_sertifikat >= 70 && $nilai_sertifikat < 79){
+                $data['peserta']['syahadah']['nilai'] = "جيد";
+            } else if($nilai_sertifikat >= 60 && $nilai_sertifikat < 70){
+                $data['peserta']['syahadah']['nilai'] = "مقبول";
+            } else if($nilai_sertifikat >= 0 && $nilai_sertifikat < 60){
+                $data['peserta']['syahadah']['nilai'] = "ضعيف";
+            }
+        } else if($data['kelas']['program'] == "AlMiftah 1") {
+            $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Binaayatul Jumlah", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+            if($nilai) $data['peserta']['syahadah']['nilai_binayatuljumlah'] = $this->angka_arab($nilai['nilai']);
+            else $data['peserta']['syahadah']['nilai_binayatuljumlah'] = 0;
+            $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Tarakib", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+            if($nilai) $data['peserta']['syahadah']['nilai_tarakib'] = $this->angka_arab($nilai['nilai']);
+            else $data['peserta']['syahadah']['nilai_tarakib'] = 0;
+            
+            $nilai_sertifikat = ($this->angka_indo($data['peserta']['syahadah']['nilai_binayatuljumlah']) + $this->angka_indo($data['peserta']['syahadah']['nilai_tarakib'])) / 2;
+
+            if($nilai_sertifikat >= 90 && $nilai_sertifikat <= 100){
+                $data['peserta']['syahadah']['nilai'] = "ممتاز";
+            } else if($nilai_sertifikat >= 80 && $nilai_sertifikat < 90){
+                $data['peserta']['syahadah']['nilai'] = "جيد جدا";
+            } else if($nilai_sertifikat >= 70 && $nilai_sertifikat < 79){
+                $data['peserta']['syahadah']['nilai'] = "جيد";
+            } else if($nilai_sertifikat >= 60 && $nilai_sertifikat < 70){
+                $data['peserta']['syahadah']['nilai'] = "مقبول";
+            } else if($nilai_sertifikat >= 0 && $nilai_sertifikat < 60){
+                $data['peserta']['syahadah']['nilai'] = "ضعيف";
+            }
+        } else if($data['kelas']['program'] == "AlMiftah 2") {
+            $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Tahfidzul Andzhima", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+            if($nilai) $data['peserta']['syahadah']['nilai_tahfidzulandzhima'] = $this->angka_arab($nilai['nilai']);
+            else $data['peserta']['syahadah']['nilai_tahfidzulandzhima'] = 0;
+            $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Qiroah", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+            if($nilai) $data['peserta']['syahadah']['nilai_qiroah'] = $this->angka_arab($nilai['nilai']);
+            else $data['peserta']['syahadah']['nilai_qiroah'] = 0;
+            
+            $nilai_sertifikat = ($this->angka_indo($data['peserta']['syahadah']['nilai_tahfidzulandzhima']) + $this->angka_indo($data['peserta']['syahadah']['nilai_qiroah'])) / 2;
+
+            if($nilai_sertifikat >= 90 && $nilai_sertifikat <= 100){
+                $data['peserta']['syahadah']['nilai'] = "ممتاز";
+            } else if($nilai_sertifikat >= 80 && $nilai_sertifikat < 90){
+                $data['peserta']['syahadah']['nilai'] = "جيد جدا";
+            } else if($nilai_sertifikat >= 70 && $nilai_sertifikat < 79){
+                $data['peserta']['syahadah']['nilai'] = "جيد";
+            } else if($nilai_sertifikat >= 60 && $nilai_sertifikat < 70){
+                $data['peserta']['syahadah']['nilai'] = "مقبول";
+            } else if($nilai_sertifikat >= 0 && $nilai_sertifikat < 60){
+                $data['peserta']['syahadah']['nilai'] = "ضعيف";
+            }
+        } else if($data['kelas']['program'] == "Timur Tengah 1" || $data['kelas']['program'] == "Timur Tengah 2") {
+            $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Qiroah", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+            if($nilai) $data['peserta']['syahadah']['nilai_qiroah'] = $this->angka_arab($nilai['nilai']);
+            else $data['peserta']['syahadah']['nilai_qiroah'] = 0;
+            $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Qowaid", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+            if($nilai) $data['peserta']['syahadah']['nilai_qowaid'] = $this->angka_arab($nilai['nilai']);
+            else $data['peserta']['syahadah']['nilai_qowaid'] = 0;
+            $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "TOAFL", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+            if($nilai) $data['peserta']['syahadah']['nilai_toafl'] = $this->angka_arab($nilai['nilai']);
+            else $data['peserta']['syahadah']['nilai_toafl'] = 0;
+            
+            $nilai_sertifikat = ($this->angka_indo($data['peserta']['syahadah']['nilai_qiroah']) + $this->angka_indo($data['peserta']['syahadah']['nilai_qowaid']) + $this->angka_indo($data['peserta']['syahadah']['nilai_toafl'])) / 3;
+
+            if($nilai_sertifikat >= 90 && $nilai_sertifikat <= 100){
+                $data['peserta']['syahadah']['nilai'] = "ممتاز";
+            } else if($nilai_sertifikat >= 80 && $nilai_sertifikat < 90){
+                $data['peserta']['syahadah']['nilai'] = "جيد جدا";
+            } else if($nilai_sertifikat >= 70 && $nilai_sertifikat < 79){
+                $data['peserta']['syahadah']['nilai'] = "جيد";
+            } else if($nilai_sertifikat >= 60 && $nilai_sertifikat < 70){
+                $data['peserta']['syahadah']['nilai'] = "مقبول";
+            } else if($nilai_sertifikat >= 0 && $nilai_sertifikat < 60){
+                $data['peserta']['syahadah']['nilai'] = "ضعيف";
+            }
+        } else if($data['kelas']['program'] == "Manhaji") {
+            $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Fahmul Qowaid", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+            if($nilai) $data['peserta']['syahadah']['nilai_fahmulqowaid'] = $this->angka_arab($nilai['nilai']);
+            else $data['peserta']['syahadah']['nilai_fahmulqowaid'] = 0;
+            $nilai = $this->Main_model->get_one("nilai_peserta", ["pelajaran" => "Adad Ma'dud", "id_kelas" => $data['kelas']['id_kelas'], "id_peserta" => $peserta['id_peserta']]);
+            if($nilai) $data['peserta']['syahadah']['nilai_adadmadud'] = $this->angka_arab($nilai['nilai']);
+            else $data['peserta']['syahadah']['nilai_adadmadud'] = 0;
+            
+            $nilai_sertifikat = ($this->angka_indo($data['peserta']['syahadah']['nilai_fahmulqowaid']) + $this->angka_indo($data['peserta']['syahadah']['nilai_adadmadud'])) / 2;
+
+            if($nilai_sertifikat >= 90 && $nilai_sertifikat <= 100){
+                $data['peserta']['syahadah']['nilai'] = "ممتاز";
+            } else if($nilai_sertifikat >= 80 && $nilai_sertifikat < 90){
+                $data['peserta']['syahadah']['nilai'] = "جيد جدا";
+            } else if($nilai_sertifikat >= 70 && $nilai_sertifikat < 79){
+                $data['peserta']['syahadah']['nilai'] = "جيد";
+            } else if($nilai_sertifikat >= 60 && $nilai_sertifikat < 70){
+                $data['peserta']['syahadah']['nilai'] = "مقبول";
+            } else if($nilai_sertifikat >= 0 && $nilai_sertifikat < 60){
+                $data['peserta']['syahadah']['nilai'] = "ضعيف";
+            }
         }
         
-        var_dump($data);
+        // ss
+        $program = $this->Main_model->get_one("program", ["program" => $peserta['program']]);
+        $data['peserta']['syahadah']['program_arab'] = $program['program_arab'];
+        
+        // var_dump($data);
+        // $this->load->view("templates/header", $data);
+        // $this->load->view("pages/syahadah/syahadah-peserta", $data);
+        
+        // echo json_encode($data);
+        $defaultConfig = (new Mpdf\Config\ConfigVariables())->getDefaults();
+        $fontDirs = $defaultConfig['fontDir'];
+
+        $defaultFontConfig = (new Mpdf\Config\FontVariables())->getDefaults();
+        $fontData = $defaultFontConfig['fontdata'];
+
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [210, 330], 'orientation' => 'P', 'margin_left' => '0', 'margin_right' => '0', 'margin_top' => '0', 'margin_bottom' => '0', 'fontDir' => array_merge($fontDirs, [__DIR__ . '/assets/font',]),
+        'fontdata' => $fontData + [
+            'arab' => [
+                'R' => 'trado.ttf',
+                'useOTL' => 0xFF,
+                'useKashida' => 75,
+            ],
+            'mcs' => [
+                'R' => 'MCS-Erwah-S_U-normal..ttf',
+                // mcs_erwah.ttf
+                // 'useOTL' => 0xFF,
+                // 'useKashida' => 75,
+            ]
+        ], 
+        ]);
+
+        $mpdf->allow_charset_conversion = true;
+        
+        $mpdf->text_input_as_HTML = true; //(default = false)
+
+        $print = $this->load->view("pages/syahadah/syahadah-peserta", $data, TRUE);
+        $mpdf->WriteHTML($print);
+        $mpdf->AddPage();
+        $print = $this->load->view("pages/syahadah/nilai", $data, TRUE);
+        $mpdf->WriteHTML($print);
+        $mpdf->Output();
     }
 
     public function tgl_masehi($tanggal)
@@ -80,7 +464,7 @@ class Syahadah extends CI_Controller {
         $tanggalnya=$this->angka_arab(substr($tanggal,8,2));
         $bulannya=$array_bulan[ceil(substr($tanggal,5,2))-1];
         $tahunnya=$this->angka_arab(substr($tanggal,0,4));
-        $tglsekarang=$tanggalnya." ".$bulannya." ".$tahunnya."م";
+        $tglsekarang=$tanggalnya." ".$bulannya." ".$tahunnya;
 
         return $tglsekarang;
 
@@ -147,6 +531,21 @@ class Syahadah extends CI_Controller {
         $data = str_replace("7", "٧", $data);
         $data = str_replace("8", "٨", $data);
         $data = str_replace("9", "٩", $data);
+
+        return $data;
+    }
+    
+    public function angka_indo($data){
+        $data = str_replace("٠", "0", $data);
+        $data = str_replace("١", "1", $data);
+        $data = str_replace("٢", "2", $data);
+        $data = str_replace("٣", "3", $data);
+        $data = str_replace("٤", "4", $data);
+        $data = str_replace("٥", "5", $data);
+        $data = str_replace("٦", "6", $data);
+        $data = str_replace("٧", "7", $data);
+        $data = str_replace("٨", "8", $data);
+        $data = str_replace("٩", "9", $data);
 
         return $data;
     }

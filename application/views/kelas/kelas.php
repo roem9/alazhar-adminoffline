@@ -16,7 +16,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card shadow mb-4" style="max-width: 900px">
+            <div class="card shadow mb-4" style="max-width: 1000px">
                 <div class="card-body">
                     <div id="reload">
                         <table id="dataTable" class="table table-sm cus-font">
@@ -26,7 +26,7 @@
                                     <th style="width: 9%">Status</th>
                                     <th style="width: 12%">Tgl. Mulai</th>
                                     <th>Nama Kelas</th>
-                                    <th style="width: 10%"><center>Program</center></th>
+                                    <th style="width: 20%"><center>Program</center></th>
                                     <th style="width: 5%">Peserta</th>
                                     <th style="width: 5%">Wl</th>
                                     <th style="width: 5%">Detail</th>
@@ -57,13 +57,13 @@
                     <div class="card-header">
                         <ul class="nav nav-tabs card-header-tabs">
                             <li class="nav-item">
-                                <a href="#" class='nav-link active' id="btn-form-1"><i class="fas fa-book"></i></a>
+                                <a href="javascript:void(0)" class='nav-link active' id="btn-form-1"><i class="fas fa-book"></i></a>
                             </li>
                             <li class="nav-item">
-                                <a href="#" class='nav-link' id="btn-form-2"><i class="fas fa-users"></i></a>
+                                <a href="javascript:void(0)" class='nav-link' id="btn-form-2"><i class="fas fa-users"></i></a>
                             </li>
                             <li class="nav-item">
-                                <a href="#" class='nav-link' id="btn-form-3"><i class="fas fa-clock"></i></a>
+                                <a href="javascript:void(0)" class='nav-link' id="btn-form-3"><i class="fas fa-clock"></i></a>
                             </li>
                         </ul>
                     </div>
@@ -204,16 +204,6 @@
     $(".btnModal").click(function(){
         delete_msg();
     })
-
-    // peserta
-    let a = [];
-
-    // pertemuan
-    let b = [];
-
-    $(".btnModal").click(function(){
-        delete_msg();
-    })
                                     
     table = $('#dataTable').DataTable({ 
         "processing": true, //Feature control the processing indicator.
@@ -286,6 +276,7 @@
         return false;
     })
     
+    // when detail button clicked
     $("#dataTable").on("click", ".detail", function(){
         a = [];
         $("#select1").html(0);
@@ -295,6 +286,7 @@
         delete_msg();
     })
     
+    // when count peserta clicked
     $("#dataTable").on("click", ".peserta", function(){
         a = [];
         $("#select1").html(0);
@@ -304,6 +296,7 @@
         delete_msg();
     })
     
+    // when count wl clicked
     $("#dataTable").on("click", ".wl", function(){
         a = [];
         $("#select1").html(0);
@@ -313,6 +306,7 @@
         delete_msg();
     })
 
+    // when status clicked
     $("#dataTable").on("click", "#btnStatusKelas", function(){
         let data = $(this).data("id");
         data = data.split("|");
@@ -338,79 +332,6 @@
                 }
             })
         }
-    })
-    
-    $("#formDeletePeserta").submit(function(){
-        if(confirm("Yakin akan menghapus peserta dari kelas ini?")){
-            if((a === undefined || a.length == 0)){
-                var msg = `
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert"><i class="fa fa-times-circle text-danger mr-1"></i> Untuk menghapus peserta silahkan menandai checkbox terlebih dahulu<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`;
-                $('.msgHapusPeserta').html(msg);
-                $("#modalDetail").scrollTop(0);
-            }
-            var id = $("input[name='id_kelas']").val()
-            $.ajax({
-                type : "POST",
-                url : "<?= base_url()?>kelas/delete_peserta",
-                dataType : "JSON",
-                data : {peserta:a, id_kelas:id},
-                success : function(data){
-                    var msg = `
-                            <div class="alert alert-success alert-dismissible fade show" role="alert"><i class="fa fa-check-circle text-success mr-1"></i> Berhasil menghapus peserta dari kelas ini<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`;
-                    $('.msgHapusPeserta').html(msg);
-                    $("#modalDetail").scrollTop(0);
-                    detail(id);
-                    btn_2();
-                    reload_table();
-                    $("#select1").html(0);
-                }
-            })
-        }   
-        return false;
-    })
-
-    $('#formDeletePeserta').on('click', 'input[type="checkbox"][name="peserta[]"]', function(){
-        if($(this).prop("checked") == true){
-            a.push($(this).val());
-            $("#select1").html(a.length);
-        }
-        else if($(this).prop("checked") == false){
-            let no = a.indexOf($(this).val());
-            a.splice(no, 1);
-            $("#select1").html(a.length);
-        }
-    });
-    
-    $('#formListPertemuan').on('click', 'input[type="checkbox"][name="pertemuan[]"]', function(){
-        if($(this).prop("checked") == true){
-            b.push($(this).val());
-        }
-        else if($(this).prop("checked") == false){
-            let no = b.indexOf($(this).val());
-            b.splice(no, 1);
-        }
-    });
-    
-    $("#formListPertemuan").submit(function(){
-        if(confirm("Yakin akan merubah data pertemuan?")){
-            var id = $("input[name='id_kelas']").val()
-            $.ajax({
-                type : "POST",
-                url : "<?= base_url()?>kelas/list_pertemuan",
-                dataType : "JSON",
-                data : {pertemuan:b, id_kelas:id},
-                success : function(data){
-                    b = [];
-                    var msg = `
-                            <div class="alert alert-success alert-dismissible fade show" role="alert"><i class="fa fa-check-circle text-success mr-1"></i> Berhasil merubah data pertemuan<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`;
-                    $('.msgListPertemuan').html(msg);
-                    $("#modalDetail").scrollTop(0);
-                    detail(id);
-                    reload_table();
-                }
-            })
-        }   
-        return false;
     })
     
     // detail
@@ -498,13 +419,12 @@
 
                     html = "";
 
-                    // let peserta = data.peserta;
                     if(data.peserta){
                         $("#jumPeserta").html(data.peserta.length)
                         data.peserta.forEach((element, i) => {
                             if(element.no_syahadah == 0) {
-                                btnDelete = `<a href="#" id="keluar_kelas" class="mr-1" data-id="`+element.id+`|`+element.nama_indo+`|`+data.nama_kelas+`"><i class="fa fa-minus-circle text-danger"></i></a>`
-                                btnSyahadah = `<a href="#" id="buatSyahadah" data-id="`+element.id+`|`+element.nama_indo+`|`+data.nama_kelas+`|`+data.id_kelas+`|" class="btn btn-sm btn-outline-warning"><i class="fa fa-award"></i></a>`
+                                btnDelete = `<a href="javascript:void(0)" id="keluar_kelas" class="mr-1" data-id="`+element.id+`|`+element.nama_indo+`|`+data.nama_kelas+`"><i class="fa fa-minus-circle text-danger"></i></a>`
+                                btnSyahadah = `<a href="javascript:void(0)" id="buatSyahadah" data-id="`+element.id+`|`+element.nama_indo+`|`+data.nama_kelas+`|`+data.id_kelas+`|" class="btn btn-sm btn-outline-warning"><i class="fa fa-award"></i></a>`
                             } else {
                                 btnDelete = ""
                                 btnSyahadah = `<a target="_blank" href="<?= base_url()?>syahadah/peserta/`+element.link+`" class="btn btn-sm btn-warning"><i class="fa fa-award"></i></a>`
@@ -530,17 +450,16 @@
                     
                     html = "";
 
-                    // let peserta = data.peserta;
                     if(data.wl){
                         $("#jumWlPeserta").html(data.wl.length)
                         data.wl.forEach((element, i) => {
                             html += `<li class="list-group-item d-flex justify-content-between">
                                         <span>
-                                            <a href="#" id="delete_wl" class="mr-1" data-id="`+element.id+`|`+element.nama_indo+`|`+data.program+`|`+data.id_kelas+`"><i class="fa fa-minus-circle text-danger"></i></a>
+                                            <a href="javascript:void(0)" id="delete_wl" class="mr-1" data-id="`+element.id+`|`+element.nama_indo+`|`+data.program+`|`+data.id_kelas+`"><i class="fa fa-minus-circle text-danger"></i></a>
                                             `+element.nama_indo+` (`+element.periode+`)
                                         </span>
                                         <span>
-                                            <a href="#" id="add_kelas_wl" data-id="`+element.id+`|`+element.nama_indo+`|`+data.nama_kelas+`|`+data.id_kelas+`"><i class="fa fa-plus-circle text-success"></i></a>
+                                            <a href="javascript:void(0)" id="add_kelas_wl" data-id="`+element.id+`|`+element.nama_indo+`|`+data.nama_kelas+`|`+data.id_kelas+`"><i class="fa fa-plus-circle text-success"></i></a>
                                         </span>
                                     </li>`;
                         });

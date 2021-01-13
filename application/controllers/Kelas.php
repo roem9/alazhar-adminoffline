@@ -37,8 +37,8 @@ class Kelas extends CI_CONTROLLER{
             $no++;
             $row = array();
             $row[] = '<center>'.$no.'</center>';
-            if($kelas->status == "aktif") $row[] = '<a href="#" class="btn btn-sm btn-outline-success" data-id="'.$kelas->id_kelas.'|'.$kelas->nama_kelas.'|menonaktifkan" id="btnStatusKelas">aktif</a>';
-            else $row[] = '<a href="#" class="btn btn-sm btn-outline-secondary" data-id="'.$kelas->id_kelas.'|'.$kelas->nama_kelas.'|mengaktifkan" id="btnStatusKelas">nonaktif</a>';
+            if($kelas->status == "aktif") $row[] = '<a href="javascript:void(0)" class="btn btn-sm btn-outline-success" data-id="'.$kelas->id_kelas.'|'.$kelas->nama_kelas.'|menonaktifkan" id="btnStatusKelas">aktif</a>';
+            else $row[] = '<a href="javascript:void(0)" class="btn btn-sm btn-outline-secondary" data-id="'.$kelas->id_kelas.'|'.$kelas->nama_kelas.'|mengaktifkan" id="btnStatusKelas">nonaktif</a>';
             $row[] = date("d-m-Y", strtotime($kelas->tgl_mulai));
             $row[] = $kelas->nama_kelas;
             $row[] = $kelas->program;
@@ -69,7 +69,7 @@ class Kelas extends CI_CONTROLLER{
                 $data['peserta'][$i] = $this->Main_model->get_one("peserta", ["id_peserta" => $peserta['id_peserta']]);
                 $data['peserta'][$i]['id'] = $peserta['id'];
                 $data['peserta'][$i]['no_syahadah'] = $peserta['no_syahadah'];
-                $data['peserta'][$i]['link'] = MD5($peserta['id']);
+                $data['peserta'][$i]['link'] = MD5($peserta['id'])."/".MD5($id);
             }
 
             $wl = $this->Main_model->get_all("kelas_peserta", ["id_kelas" => null, "program" => $data['program']], "periode", "ASC");

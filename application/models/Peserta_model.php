@@ -5,7 +5,7 @@ class Peserta_model extends CI_Model {
     var $table = 'peserta';
     var $column_order = array(null,'tgl_daftar','no_peserta','nama_indo',null,null,null,null,null); //set column field database for datatable orderable
     var $column_search = array('tgl_daftar','nama_indo','no_peserta'); //set column field database for datatable searchable 
-    var $order = array('no_peserta' => 'asc'); // default order 
+    var $order = array('no_peserta' => 'desc'); // default order 
  
     public function __construct()
     {

@@ -37,7 +37,7 @@ class Login extends CI_CONTROLLER{
  
 			$this->session->set_userdata($data_session);
             
-            redirect(base_url('peserta'));
+            redirect(base_url('peserta/konfirm'));
  
 		}else{
             $this->session->set_flashdata('login', 'Maaf, kombinasi username dan password salah');

@@ -92,6 +92,7 @@
                     $row[] = '<center><a href="#modalEdit" data-toggle="modal" data-id="'.$peserta->id_peserta.'" class="btn btn-sm btn-outline-dark peserta">' . COUNT($this->Main_model->get_all("kelas_peserta", ["id_peserta" => $peserta->id_peserta, "id_kelas <>" => NULL])) . '</a></center>';
                     $row[] = '<center><a href="#modalEdit" data-toggle="modal" data-id="'.$peserta->id_peserta.'" class="btn btn-sm btn-outline-warning peserta">' . COUNT($this->Main_model->get_all("kelas_peserta", ["id_peserta" => $peserta->id_peserta, "id_kelas =" => NULL])) . '</a></center>';
                     $row[] = '<a href="#modalEdit" data-toggle="modal" data-id="'.$peserta->id_peserta.'" class="btn btn-sm btn-info detail">detail</a>';
+                    $row[] = '<center><a href="#modalAdd" data-toggle="modal" data-id="'.$peserta->id_peserta.'" class="btn btn-sm btn-outline-secondary salin"><i class="fa fa-copy"></i></a></center>';
                 } else {
                     $row[] = '<a href="#modalAdd" data-toggle="modal" data-id="'.$peserta->id_peserta.'" class="btn btn-sm btn-success konfirmasi">Konfirmasi</a>';
                 }
