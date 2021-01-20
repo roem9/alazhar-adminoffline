@@ -3,13 +3,13 @@
     <head>
         <meta charset="utf-8">
     </head>
-    <body>
+    <body lang="ar">
         <h3><?= $filename?></h3>
         <?php foreach ($kelas as $kelas) :?>
             <table border=1>
                 <?php if($kelas['program'] == "Full Time 1" || $kelas['program'] == "Full Time 2" || $kelas['program'] == "Full Time 3" || $kelas['program'] == "Usbuain"):?>
                     <tr>
-                        <td colspan="10"><center><?= $kelas['nama_kelas']?></center></td>
+                        <td colspan="9"><center><?= $kelas['nama_kelas']?></center></td>
                     </tr>
                     <tr>
                         <td rowspan="2">No</td>
@@ -19,7 +19,6 @@
                         <td rowspan="2"><center>Alamat</center></td>
                         <td colspan="3"><center>Nilai</center></td>
                         <td rowspan="2"><center>Hasil</center></td>
-                        <td rowspan="2"><center>No. Syahadah</center></td>
                     </tr>
                     <tr>
                         <td><center>Mufrodat</center></td>
@@ -37,12 +36,11 @@
                             <td><center><?= $peserta['nilai_muhadatsah']?></center></td>
                             <td><center><?= $peserta['nilai_qowaid']?></center></td>
                             <td><center><?= $peserta['nilai_sertifikat']?></center></td>
-                            <td><?= $peserta['no_syahadah']?></td>
                         </tr>
                     <?php endforeach;?>     
                 <?php elseif($kelas['program'] == "Tamyiz 1&2") :?>
                     <tr>
-                        <td colspan="10"><center><?= $kelas['nama_kelas']?></center></td>
+                        <td colspan="9"><center><?= $kelas['nama_kelas']?></center></td>
                     </tr>
                     <tr>
                         <td rowspan="2">No</td>
@@ -52,7 +50,6 @@
                         <td rowspan="2"><center>Alamat</center></td>
                         <td colspan="3"><center>Nilai</center></td>
                         <td rowspan="2"><center>Hasil</center></td>
-                        <td rowspan="2"><center>No. Syahadah</center></td>
                     </tr>
                     <tr>
                         <td><center>Fahmul Qowaid</center></td>
@@ -70,12 +67,11 @@
                             <td><center><?= $peserta['nilai_tarjamah']?></center></td>
                             <td><center><?= $peserta['nilai_tatbiquttalim']?></center></td>
                             <td><center><?= $peserta['nilai_sertifikat']?></center></td>
-                            <td><?= $peserta['no_syahadah']?></td>
                         </tr>
                     <?php endforeach;?> 
                 <?php elseif($kelas['program'] == "Tamyiz 3&4") :?>
                     <tr>
-                        <td colspan="10"><center><?= $kelas['nama_kelas']?></center></td>
+                        <td colspan="9"><center><?= $kelas['nama_kelas']?></center></td>
                     </tr>
                     <tr>
                         <td rowspan="2">No</td>
@@ -85,7 +81,6 @@
                         <td rowspan="2"><center>Alamat</center></td>
                         <td colspan="3"><center>Nilai</center></td>
                         <td rowspan="2"><center>Hasil</center></td>
-                        <td rowspan="2"><center>No. Syahadah</center></td>
                     </tr>
                     <tr>
                         <td><center>Tarkib</center></td>
@@ -103,12 +98,11 @@
                             <td><center><?= $peserta['nilai_ilal']?></center></td>
                             <td><center><?= $peserta['nilai_tarjamah']?></center></td>
                             <td><center><?= $peserta['nilai_sertifikat']?></center></td>
-                            <td><?= $peserta['no_syahadah']?></td>
                         </tr>
                     <?php endforeach;?> 
                 <?php elseif($kelas['program'] == "AlMiftah 1") :?>
                     <tr>
-                        <td colspan="9"><center><?= $kelas['nama_kelas']?></center></td>
+                        <td colspan="8"><center><?= $kelas['nama_kelas']?></center></td>
                     </tr>
                     <tr>
                         <td rowspan="2">No</td>
@@ -118,7 +112,6 @@
                         <td rowspan="2"><center>Alamat</center></td>
                         <td colspan="2"><center>Nilai</center></td>
                         <td rowspan="2"><center>Hasil</center></td>
-                        <td rowspan="2"><center>No. Syahadah</center></td>
                     </tr>
                     <tr>
                         <td><center>Binaayatul Jumlah</center></td>
@@ -134,12 +127,11 @@
                             <td><center><?= $peserta['nilai_binayatuljumlah']?></center></td>
                             <td><center><?= $peserta['nilai_tarakib']?></center></td>
                             <td><center><?= $peserta['nilai_sertifikat']?></center></td>
-                            <td><?= $peserta['no_syahadah']?></td>
                         </tr>
                     <?php endforeach;?> 
                 <?php elseif($kelas['program'] == "AlMiftah 2") :?>
                     <tr>
-                        <td colspan="9"><center><?= $kelas['nama_kelas']?></center></td>
+                        <td colspan="8"><center><?= $kelas['nama_kelas']?></center></td>
                     </tr>
                     <tr>
                         <td rowspan="2">No</td>
@@ -149,7 +141,6 @@
                         <td rowspan="2"><center>Alamat</center></td>
                         <td colspan="2"><center>Nilai</center></td>
                         <td rowspan="2"><center>Hasil</center></td>
-                        <td rowspan="2"><center>No. Syahadah</center></td>
                     </tr>
                     <tr>
                         <td><center>Tahfidzul Andzhima</center></td>
@@ -165,12 +156,11 @@
                             <td><center><?= $peserta['nilai_tahfidzulandzhima']?></center></td>
                             <td><center><?= $peserta['nilai_qiroah']?></center></td>
                             <td><center><?= $peserta['nilai_sertifikat']?></center></td>
-                            <td><?= $peserta['no_syahadah']?></td>
                         </tr>
                     <?php endforeach;?> 
                 <?php elseif($kelas['program'] == "Timur Tengah 1" || $kelas['program'] == "Timur Tengah 2") :?>
                     <tr>
-                        <td colspan="10"><center><?= $kelas['nama_kelas']?></center></td>
+                        <td colspan="9"><center><?= $kelas['nama_kelas']?></center></td>
                     </tr>
                     <tr>
                         <td rowspan="2">No</td>
@@ -180,7 +170,6 @@
                         <td rowspan="2"><center>Alamat</center></td>
                         <td colspan="3"><center>Nilai</center></td>
                         <td rowspan="2"><center>Hasil</center></td>
-                        <td rowspan="2"><center>No. Syahadah</center></td>
                     </tr>
                     <tr>
                         <td><center>Qiroah</center></td>
@@ -198,12 +187,11 @@
                             <td><center><?= $peserta['nilai_qowaid']?></center></td>
                             <td><center><?= $peserta['nilai_toafl']?></center></td>
                             <td><center><?= $peserta['nilai_sertifikat']?></center></td>
-                            <td><?= $peserta['no_syahadah']?></td>
                         </tr>
                     <?php endforeach;?>
                 <?php elseif($kelas['program'] == "Manhaji") :?>
                     <tr>
-                        <td colspan="9"><center><?= $kelas['nama_kelas']?></center></td>
+                        <td colspan="8"><center><?= $kelas['nama_kelas']?></center></td>
                     </tr>
                     <tr>
                         <td rowspan="2">No</td>
@@ -213,7 +201,6 @@
                         <td rowspan="2"><center>Alamat</center></td>
                         <td colspan="2"><center>Nilai</center></td>
                         <td rowspan="2"><center>Hasil</center></td>
-                        <td rowspan="2"><center>No. Syahadah</center></td>
                     </tr>
                     <tr>
                         <td><center>Fahmul Qowaid</center></td>
@@ -229,7 +216,6 @@
                             <td><center><?= $peserta['nilai_fahmulqowaid']?></center></td>
                             <td><center><?= $peserta['nilai_adadmadud']?></center></td>
                             <td><center><?= $peserta['nilai_sertifikat']?></center></td>
-                            <td><?= $peserta['no_syahadah']?></td>
                         </tr>
                     <?php endforeach;?> 
                 <?php endif;?>

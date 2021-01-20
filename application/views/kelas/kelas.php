@@ -212,7 +212,7 @@
 
         // Load data for the table's content from an Ajax source
         "ajax": {
-            "url": "<?= base_url()?>kelas/ajax_list",
+            "url": "<?= base_url()?>kelas/ajax_list/<?= $status?>",
             "type": "POST"
         },
 

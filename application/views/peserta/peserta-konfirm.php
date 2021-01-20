@@ -78,6 +78,14 @@
                         <input type="date" name="tgl_lahir" id="tgl_lahir_add" class="form-control form-control-sm" required>
                     </div>
                     <div class="form-group">
+                        <label for="jk">Jenis Kelamin</label>
+                        <select name="jk" id="jk_add" class="form-control form-control-sm" required>
+                            <option value="">Pilih Jenis Kelamin</option>
+                            <option value="Laki-Laki">Laki-Laki</option>
+                            <option value="Perempuan">Perempuan</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label for="desa_kel_indo">Desa / Kelurahan (Indonesia)</label>
                         <input type="text" name="desa_kel_indo" id="desa_kel_indo_add" class="form-control form-control-sm" required>
                     </div>
@@ -119,18 +127,21 @@
                     </div>
                     <div class="form-group">
                         <label for="detail_pembayaran">Detail Pembayaran</label>
-                        <textarea name="detail_pembayaran" id="detail_pembayaran_add" class="form-control form-control-sm">pendaftaran, keamanan, kaos, asrama</textarea>
+                        <textarea name="detail_pembayaran" id="detail_pembayaran_add" class="form-control form-control-sm" required>pendaftaran, keamanan, kaos, asrama</textarea>
                     </div>
-                    <!-- <div class="form-group">
+                    <div class="form-group">
                         <label for="">Pilih Program</label>
-                        <div class="row">
+                        <select name="program" id="program_add" class="form-control form-control-sm" required>
+                            <option value="">Pilih Program</option>
                             <?php foreach ($program as $data) :?>
-                                <div class="col-4">
-                                    <input type="checkbox" name="program" class="program_add mr-1" id="<?= $data['program']?>" value="<?= $data['program']?>"><label for="<?= $data['program']?>"><?= $data['program']?></label>
-                                </div>
+                                <option value="<?= $data['program']?>"><?= $data['program']?></option>
                             <?php endforeach;?>
-                        </div>
-                    </div> -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="perioe">Periode Belajar</label>
+                        <input type="date" name="periode" id="periode_add" class="form-control form-control-sm" required>
+                    </div>
                     <div class="d-flex justify-content-end">
                         <button type="button" class="btn btn-sm btn-danger mr-1" id="btnmodalHapus">Hapus</button>
                         <input type="submit" value="Konfirmasi Peserta" class="btn btn-sm btn-primary" id="btnmodalAdd">
@@ -211,6 +222,7 @@
             let t4_lahir_indo = $('#t4_lahir_indo_add').val()
             let t4_lahir_arab = $('#t4_lahir_arab_add').val()
             let tgl_lahir = $('#tgl_lahir_add').val()
+            let jk = $('#jk_add').val()
             let desa_kel_indo = $('#desa_kel_indo_add').val()
             let desa_kel_arab = $('#desa_kel_arab_add').val()
             let kec_indo = $('#kec_indo_add').val()
@@ -221,12 +233,14 @@
             let pembayaran = $('#pembayaran_add').val()
             let detail_pembayaran = $('#detail_pembayaran_add').val()
             let email = $('#email_add').val()
+            let program = $('#program_add').val()
+            let periode = $('#periode_add').val()
 
             $.ajax({
                 type : "POST",
                 url : "<?= base_url()?>peserta/konfirm_peserta",
                 dataType : "JSON",
-                data : {id_peserta: id_peserta, tgl_daftar: tgl_daftar,nik: nik,nama_indo: nama_indo,nama_arab: nama_arab,t4_lahir_indo: t4_lahir_indo,t4_lahir_arab: t4_lahir_arab,tgl_lahir: tgl_lahir,desa_kel_indo: desa_kel_indo,desa_kel_arab: desa_kel_arab,kec_indo: kec_indo,kec_arab: kec_arab,kota_kab_indo: kota_kab_indo,kota_kab_arab: kota_kab_arab,no_wa: no_wa,pembayaran: pembayaran,detail_pembayaran: detail_pembayaran,email: email, program: a},
+                data : {id_peserta: id_peserta, tgl_daftar: tgl_daftar,nik: nik,nama_indo: nama_indo,nama_arab: nama_arab,t4_lahir_indo: t4_lahir_indo,t4_lahir_arab: t4_lahir_arab,tgl_lahir: tgl_lahir,jk:jk,desa_kel_indo: desa_kel_indo,desa_kel_arab: desa_kel_arab,kec_indo: kec_indo,kec_arab: kec_arab,kota_kab_indo: kota_kab_indo,kota_kab_arab: kota_kab_arab,no_wa: no_wa,pembayaran: pembayaran,detail_pembayaran: detail_pembayaran,email: email, program: program, periode:periode},
                 success : function(data){
                     // console.log(data)
                     $("#modalAdd").modal('hide');
@@ -269,6 +283,7 @@
                     $('#t4_lahir_indo_add').val(data.t4_lahir_indo)
                     $('#t4_lahir_arab_add').val(data.t4_lahir_arab)
                     $('#tgl_lahir_add').val(data.tgl_lahir)
+                    $('#jk_add').val(data.jk)
                     $('#desa_kel_indo_add').val(data.desa_kel_indo)
                     $('#desa_kel_arab_add').val(data.desa_kel_arab)
                     $('#kec_indo_add').val(data.kec_indo)

@@ -109,7 +109,7 @@
     </style>
 </head>
 <body lang="ar">
-    <!-- <img src="<?= base_url()?>assets/img/sertifikat.jpg" alt="" srcset=""> -->
+    <img src="<?= base_url()?>assets/img/sertifikat.jpg" alt="" srcset="">
     <div class="nama">
         <p style="text-align: center; font-size: 30px"><strong><?= $peserta['nama_arab']?></strong></p>
     </div>

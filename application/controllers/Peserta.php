@@ -4,6 +4,7 @@
             parent::__construct();
             $this->load->model('Peserta_model');
             $this->load->model('Wl_model');
+            $this->load->model('PesertaPeriode_model');
             $this->load->model('Main_model');
             ini_set('xdebug.var_display_max_depth', '10');
             ini_set('xdebug.var_display_max_children', '256');
@@ -27,6 +28,22 @@
             $this->load->view('templates/header', $data);
             $this->load->view('templates/sidebar');
             $this->load->view('peserta/peserta', $data);
+            $this->load->view('templates/footer');
+        }
+
+        public function periode(){
+            $data['title'] = 'List Peserta Periode '.date("M Y");
+            $data['program'] = $this->Main_model->get_all("program", "", "program", "asc");
+            $data['sidebar'] = "sidebarPeserta";
+
+            // konfirm = 1 telah dikonfirmasi
+            $data['konfirm'] = '1';
+
+            $data['kelas'] = $this->Main_model->get_all("kelas", ["status" => "aktif"], "nama_kelas");
+
+            $this->load->view('templates/header', $data);
+            $this->load->view('templates/sidebar');
+            $this->load->view('peserta/peserta-periode', $data);
             $this->load->view('templates/footer');
         }
         
@@ -76,6 +93,7 @@
                 $row[] = $peserta->nama_indo;
                 
                 if($konfirm == 1){
+                    $row[] = "<a target='_blank' href='http://api.whatsapp.com/send?phone=+62".substr($peserta->no_wa, 1)."&text=".str_replace(" ", "%20", $peserta->nama_indo)."' class='btn btn-sm btn-success'><i class='fa fa-phone'></i></a>";
                     $row[] = $this->Main_model->rupiah($peserta->pembayaran);
     
                     if($peserta->kaos == 1) $kaos = '<a href="javascript:void(0)" data-id="'.$peserta->id_peserta.'|'.$peserta->nama_indo.'|0|kaos" class="btn btn-sm btn-success mr-1 list"><i class="fa fa-tshirt"></i></a>';
@@ -104,6 +122,53 @@
                         "draw" => $_POST['draw'],
                         "recordsTotal" => $this->Peserta_model->count_all("konfirm = $konfirm"),
                         "recordsFiltered" => $this->Peserta_model->count_filtered("konfirm = $konfirm"),
+                        "data" => $data,
+                    );
+            //output to json format
+            echo json_encode($output);
+        }
+
+        public function periode_list(){
+            $list = $this->PesertaPeriode_model->get_datatables();
+            $data = array();
+            $no = $_POST['start'];
+            foreach ($list as $peserta) {
+                $no++;
+                $row = array();
+                $row[] = '<center>'.$no.'</center>';
+                $row[] = date("d-m-Y", strtotime($peserta->tgl_daftar));
+                
+                $row[] = $peserta->no_peserta;
+
+                $row[] = $peserta->nama_indo;
+            
+                $row[] = "<a target='_blank' href='http://api.whatsapp.com/send?phone=+62".substr($peserta->no_wa, 1)."&text=".str_replace(" ", "%20", $peserta->nama_indo)."' class='btn btn-sm btn-success'><i class='fa fa-phone'></i></a>";
+            
+                $row[] = $this->Main_model->rupiah($peserta->pembayaran);
+
+                if($peserta->kaos == 1) $kaos = '<a href="javascript:void(0)" data-id="'.$peserta->id_peserta.'|'.$peserta->nama_indo.'|0|kaos" class="btn btn-sm btn-success mr-1 list"><i class="fa fa-tshirt"></i></a>';
+                else $kaos = '<a href="javascript:void(0)"  data-id="'.$peserta->id_peserta.'|'.$peserta->nama_indo.'|1|kaos" class="btn btn-sm btn-outline-success mr-1 list"><i class="fa fa-tshirt"></i></a>';
+                
+                if($peserta->pin == 1) $pin = '<a href="javascript:void(0)" data-id="'.$peserta->id_peserta.'|'.$peserta->nama_indo.'|0|pin" class="btn btn-sm btn-success mr-1 list"><i class="fa fa-universal-access"></i></a>';
+                else $pin = '<a href="javascript:void(0)"  data-id="'.$peserta->id_peserta.'|'.$peserta->nama_indo.'|1|pin" class="btn btn-sm btn-outline-success mr-1 list"><i class="fa fa-universal-access"></i></a>';
+                
+                if($peserta->tas == 1) $tas = '<a href="javascript:void(0)" data-id="'.$peserta->id_peserta.'|'.$peserta->nama_indo.'|0|tas" class="btn btn-sm btn-success mr-1 list"><i class="fa fa-shopping-bag"></i></a>';
+                else $tas = '<a href="javascript:void(0)"  data-id="'.$peserta->id_peserta.'|'.$peserta->nama_indo.'|1|tas" class="btn btn-sm btn-outline-success mr-1 list"><i class="fa fa-shopping-bag"></i></a>';
+
+                $row[] = '<center>'.$kaos.$pin.$tas.'</center>';
+
+                $row[] = '<center><a href="#modalEdit" data-toggle="modal" data-id="'.$peserta->id_peserta.'" class="btn btn-sm btn-outline-dark peserta">' . COUNT($this->Main_model->get_all("kelas_peserta", ["id_peserta" => $peserta->id_peserta, "id_kelas <>" => NULL])) . '</a></center>';
+                $row[] = '<center><a href="#modalEdit" data-toggle="modal" data-id="'.$peserta->id_peserta.'" class="btn btn-sm btn-outline-warning peserta">' . COUNT($this->Main_model->get_all("kelas_peserta", ["id_peserta" => $peserta->id_peserta, "id_kelas =" => NULL])) . '</a></center>';
+                $row[] = '<a href="#modalEdit" data-toggle="modal" data-id="'.$peserta->id_peserta.'" class="btn btn-sm btn-info detail">detail</a>';
+                $row[] = '<center><a href="#modalAdd" data-toggle="modal" data-id="'.$peserta->id_peserta.'" class="btn btn-sm btn-outline-secondary salin"><i class="fa fa-copy"></i></a></center>';
+
+                $data[] = $row;
+            }
+    
+            $output = array(
+                        "draw" => $_POST['draw'],
+                        "recordsTotal" => $this->PesertaPeriode_model->count_all(),
+                        "recordsFiltered" => $this->PesertaPeriode_model->count_filtered(),
                         "data" => $data,
                     );
             //output to json format
@@ -181,6 +246,7 @@
                     't4_lahir_indo' => $this->input->post('t4_lahir_indo'),
                     't4_lahir_arab' => $this->input->post('t4_lahir_arab'),
                     'tgl_lahir' => $this->input->post('tgl_lahir'),
+                    'jk' => $this->input->post('jk'),
                     'desa_kel_indo' => $this->input->post('desa_kel_indo'),
                     'desa_kel_arab' => $this->input->post('desa_kel_arab'),
                     'kec_indo' => $this->input->post('kec_indo'),
@@ -214,6 +280,13 @@
             public function add_buku(){
                 $id = $this->input->post("id");
                 $this->Main_model->edit_data("kelas_peserta", ["id" => $id], ["buku" => 1]);
+                echo 1;
+            }
+
+            public function add_catatan_buku(){
+                $id = $this->input->post("id");
+                $catatan = $this->input->post("catatan");
+                $this->Main_model->edit_data("kelas_peserta", ["id" => $id], ["catatan" => $catatan]);
                 echo 1;
             }
         // edit
@@ -290,6 +363,7 @@
                     't4_lahir_indo' => $this->input->post('t4_lahir_indo'),
                     't4_lahir_arab' => $this->input->post('t4_lahir_arab'),
                     'tgl_lahir' => $this->input->post('tgl_lahir'),
+                    'jk' => $this->input->post('jk'),
                     'desa_kel_indo' => $this->input->post('desa_kel_indo'),
                     'desa_kel_arab' => $this->input->post('desa_kel_arab'),
                     'kec_indo' => $this->input->post('kec_indo'),
@@ -304,18 +378,14 @@
                 ];
 
                 $id_peserta = $this->Main_model->add_data("peserta", $data);
+                
+                $data = [
+                    "id_peserta" => $id_peserta,
+                    "program" => $this->input->post("program"),
+                    "periode" => $this->input->post("periode")
+                ];
 
-                // if($this->input->post("program")){
-                //     $program = $this->input->post("program");
-                //     foreach ($program as $program) {
-                //         $data = [
-                //             "id_peserta" => $id_peserta,
-                //             "program" => $program
-                //         ];
-    
-                //         $this->Main_model->add_data("kelas_peserta", $data);
-                //     }
-                // }
+                $this->Main_model->add_data("kelas_peserta", $data);
 
                 echo json_encode("1");
             }
@@ -331,6 +401,7 @@
                     't4_lahir_indo' => $this->input->post('t4_lahir_indo'),
                     't4_lahir_arab' => $this->input->post('t4_lahir_arab'),
                     'tgl_lahir' => $this->input->post('tgl_lahir'),
+                    'jk' => $this->input->post('jk'),
                     'desa_kel_indo' => $this->input->post('desa_kel_indo'),
                     'desa_kel_arab' => $this->input->post('desa_kel_arab'),
                     'kec_indo' => $this->input->post('kec_indo'),
@@ -347,17 +418,13 @@
                 $id_peserta = $this->input->post("id_peserta");
                 $this->Main_model->edit_data("peserta", ["id_peserta" => $id_peserta], $data);
 
-                // if($this->input->post("program")){
-                //     $program = $this->input->post("program");
-                //     foreach ($program as $program) {
-                //         $data = [
-                //             "id_peserta" => $id_peserta,
-                //             "program" => $program
-                //         ];
-    
-                //         $this->Main_model->add_data("kelas_peserta", $data);
-                //     }
-                // }
+                $data = [
+                    "id_peserta" => $id_peserta,
+                    "program" => $this->input->post("program"),
+                    "periode" => $this->input->post("periode")
+                ];
+
+                $this->Main_model->add_data("kelas_peserta", $data);
 
                 echo json_encode("1");
             }

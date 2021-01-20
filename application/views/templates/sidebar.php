@@ -18,10 +18,23 @@
         Admin <br>Al-Azhar
       </div>
       
-      <li class="nav-item" id="sidebarPeserta">
+      <!-- <li class="nav-item" id="sidebarPeserta">
         <a class="nav-link" href="<?= base_url()?>peserta">
           <i class="fas fa-users"></i>
           <span>Peserta</span></a>
+      </li> -->
+      <li class="nav-item" id="sidebarPeserta">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#dropone" aria-expanded="true" aria-controls="dropone">
+          <i class="fas fa-users"></i>
+          <span>Peserta</span>
+        </a>
+        <div id="dropone" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-primary py-2 collapse-inner rounded">
+            <h6 class="collapse-header text-light">Peserta</h6>
+            <a class="collapse-item text-light" href="<?= base_url()?>peserta/periode">Peserta Periode</a>
+            <a class="collapse-item text-light" href="<?= base_url()?>peserta">List Peserta</a>
+          </div>
+        </div>
       </li>
 
       <li class="nav-item" id="sidebarKonfirmPeserta">
@@ -36,17 +49,31 @@
           <span>WL Peserta</span></a>
       </li>
       
-      <li class="nav-item" id="sidebarKelas">
+      <!-- <li class="nav-item" id="sidebarKelas">
         <a class="nav-link" href="<?= base_url()?>kelas">
           <i class="fas fa-book"></i>
           <span>Kelas</span>
         </a>
+      </li> -->
+      
+      <li class="nav-item" id="sidebarKelas">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#droptwo" aria-expanded="true" aria-controls="droptwo">
+          <i class="fas fa-book"></i>
+          <span>Kelas</span>
+        </a>
+        <div id="droptwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-primary py-2 collapse-inner rounded">
+            <h6 class="collapse-header text-light">Kelas</h6>
+            <a class="collapse-item text-light" href="<?= base_url()?>kelas/aktif">Kelas Aktif</a>
+            <a class="collapse-item text-light" href="<?= base_url()?>kelas/nonaktif">Kelas Nonaktif</a>
+          </div>
+        </div>
       </li>
       
       <li class="nav-item" id="laporanKelas">
         <a href="#laporan" class="nav-link" data-toggle="modal">
-          <i class="fas fa-flag"></i>
-          <span>Laporan Kelas</span>
+          <i class="fas fa-download"></i>
+          <span>Download Dokumen</span>
         </a>
       </li>
       

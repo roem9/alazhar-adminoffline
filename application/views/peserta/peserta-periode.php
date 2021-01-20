@@ -262,7 +262,7 @@
             </div>
             <div class="modal-body cus-font" id="modal-add">
                 <div class="msg-add-data"></div>
-                <form id="formAdd" method="POST" action="<?= base_url()?>peserta/add_peserta">
+                <form id="formAdd">
                     <div class="form-group">
                         <label for="tgl_daftar">Tgl Daftar</label>
                         <input type="date" name="tgl_daftar" id="tgl_daftar_add" class="form-control form-control-sm"  value="<?= date("Y-m-d");?>" required>
@@ -415,8 +415,11 @@
 
         // Load data for the table's content from an Ajax source
         "ajax": {
-            "url": "<?= base_url()?>peserta/ajax_list/<?= $konfirm?>",
-            "type": "POST"
+            "url": "<?= base_url()?>peserta/periode_list",
+            "type": "POST",
+            // "success" : function(data){
+            //     console.log(data)
+            // }
         },
 
         //Set column definition initialisation properties.

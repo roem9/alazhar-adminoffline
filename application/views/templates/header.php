@@ -59,13 +59,22 @@
       <div class="modal-dialog modal-dialog-scrollable" role="document">
           <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="laporanTitle">Cetak Laporan Peserta</h5>
+                <h5 class="modal-title" id="laporanTitle">Download Dokumen</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body cus-font">
               <form action="<?= base_url()?>laporan/cetak_laporan" method="post">
+                  <div class="form-group">
+                      <label for="jenis_laporan">Jenis Dokumen</label>
+                      <select name="jenis_laporan" id="jenis_laporan" class="form-control form-control-sm" required>
+                        <option value="">Pilih Jenis Dokumen</option>
+                        <option value="Absensi">Absensi Peserta</option>
+                        <option value="Laporan">Laporan Peserta</option>
+                        <option value="Syahadah">Syahadah Peserta</option>
+                      </select>
+                  </div>
                   <div class="form-group">
                       <label for="bulan">Bulan</label>
                       <select name="bulan" class="form-control form-control-sm" required>
@@ -88,9 +97,14 @@
                       <label for="tahun">Tahun</label>
                       <select name="tahun" class="form-control form-control-sm" required>
                           <option value="">Pilih Tahun</option>
+                          <option value="2020">2020</option>
                           <option value="2021">2021</option>
                           <option value="2022">2022</option>
                       </select>
+                  </div>
+                  <div class="form-group">
+                      <label for="tgl_cetak">Tanggal Cetak Syahadah</label>
+                      <input type="date" name="tgl_cetak" id="tgl_cetak" class="form-control form-control-sm" disabled>
                   </div>
                   <div class="d-flex justify-content-end">
                       <input type="submit" value="Cetak Laporan" class="btn btn-sm btn-primary" id="btnlaporan">
@@ -115,4 +129,16 @@
       var c = confirm("Yakin akan menambahkan kelas?");
       return c;
     })
+
+    $("#jenis_laporan").change(function(){
+      let jenis = $(this).val();
+      if(jenis == "Syahadah"){
+        $("#tgl_cetak").prop('required',true);
+        $("#tgl_cetak").prop('disabled',false);
+      } else {
+        $("#tgl_cetak").prop('required',false);
+        $("#tgl_cetak").prop('disabled',true);
+      }
+    })
+
   </script>

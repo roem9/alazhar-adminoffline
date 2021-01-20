@@ -1,11 +1,11 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
  
-class Kelas_model extends CI_Model { 
-    var $table = 'kelas';
-    var $column_order = array(null,'status','tgl_mulai','nama_kelas','program',null,null); //set column field database for datatable orderable
-    var $column_search = array('status','tgl_mulai','nama_kelas','program'); //set column field database for datatable searchable 
-    var $order = array('tgl_input' => 'desc'); // default order 
+class PesertaPeriode_model extends CI_Model { 
+    // var $table = 'peserta';
+    var $column_order = array(null,'tgl_daftar','no_peserta','nama_indo',null,null,null,null,null); //set column field database for datatable orderable
+    var $column_search = array('tgl_daftar','nama_indo','no_peserta'); //set column field database for datatable searchable 
+    var $order = array('id_peserta' => 'desc'); // default order 
  
     public function __construct()
     {
@@ -13,11 +13,12 @@ class Kelas_model extends CI_Model {
         $this->load->model('Main_model');
         $this->load->database();
     }
- 
-    private function _get_datatables_query($where)
+
+    private function _get_datatables_query()
     {
-        $this->db->from($this->table);
-        if($where) $this->db->where($where);
+        $this->db->from("peserta");
+        $this->db->where("(id_peserta IN (SELECT id_peserta FROM kelas_peserta WHERE (MONTH(periode) = '".date('m')."' AND YEAR(periode) = ".date('Y').")))");
+        // $this->db->or_where("(MONTH(tgl_daftar) = '".date('m')."' AND YEAR(tgl_daftar) = ".date('Y').")");
  
         $i = 0;
      
@@ -54,26 +55,30 @@ class Kelas_model extends CI_Model {
         }
     }
  
-    function get_datatables($where = "")
+    function get_datatables()
     {
-        $this->_get_datatables_query($where);
+        $this->_get_datatables_query();
         if($_POST['length'] != -1)
         $this->db->limit($_POST['length'], $_POST['start']);
         $query = $this->db->get();
         return $query->result();
     }
  
-    function count_filtered($where)
+    function count_filtered()
     {
-        $this->_get_datatables_query($where);
+        $this->_get_datatables_query();
         $query = $this->db->get();
         return $query->num_rows();
     }
- 
-    public function count_all($where)
+    
+    public function count_all()
     {
-        $this->db->from($this->table);
-        if($where) $this->db->where($where);
+        
+        $this->db->from("peserta");
+        $this->db->where("(id_peserta IN (SELECT id_peserta FROM kelas_peserta WHERE (MONTH(periode) = '".date('m')."' AND YEAR(periode) = ".date('Y').")))");
+        // $this->db->or_where("(MONTH(tgl_daftar) = '".date('m')."' AND YEAR(tgl_daftar) = ".date('Y').")");
+
         return $this->db->count_all_results();
-    } 
+    }
+ 
 }

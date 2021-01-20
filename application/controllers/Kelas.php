@@ -13,9 +13,27 @@ class Kelas extends CI_CONTROLLER{
         }
     }
 
-    public function index(){
-        $data['title'] = 'List Kelas';
+    public function aktif(){
+        $data['title'] = 'List Kelas Aktif';
         $data['program'] = $this->Main_model->get_all("program", "", "program", "asc");
+        $data['status'] = "aktif";
+        // $kelas = $this->Main_model->get_all("kelas", "", "tgl_mulai", "ASC");
+        // $data['kelas'] = [];
+        // foreach ($kelas as $i => $kelas) {
+        //     $data['kelas'][$i] = $kelas;
+        //     $data['kelas'][$i]['peserta'] = COUNT($this->Main_model->get_all("kelas_peserta", ["id_kelas" => $kelas['id_kelas']]));
+        // }
+
+        $this->load->view('templates/header', $data);
+        $this->load->view('templates/sidebar');
+        $this->load->view('kelas/kelas', $data);
+        $this->load->view('templates/footer');
+    }
+    
+    public function nonaktif(){
+        $data['title'] = 'List Kelas Nonaktif';
+        $data['program'] = $this->Main_model->get_all("program", "", "program", "asc");
+        $data['status'] = "nonaktif";
         // $kelas = $this->Main_model->get_all("kelas", "", "tgl_mulai", "ASC");
         // $data['kelas'] = [];
         // foreach ($kelas as $i => $kelas) {
@@ -29,8 +47,8 @@ class Kelas extends CI_CONTROLLER{
         $this->load->view('templates/footer');
     }
 
-    public function ajax_list(){
-        $list = $this->Kelas_model->get_datatables();
+    public function ajax_list($status){
+        $list = $this->Kelas_model->get_datatables("status = '$status'");
         $data = array();
         $no = $_POST['start'];
         foreach ($list as $kelas) {
@@ -52,8 +70,8 @@ class Kelas extends CI_CONTROLLER{
 
         $output = array(
                     "draw" => $_POST['draw'],
-                    "recordsTotal" => $this->Kelas_model->count_all(),
-                    "recordsFiltered" => $this->Kelas_model->count_filtered(),
+                    "recordsTotal" => $this->Kelas_model->count_all("status = '$status'"),
+                    "recordsFiltered" => $this->Kelas_model->count_filtered("status = '$status'"),
                     "data" => $data,
                 );
         //output to json format
