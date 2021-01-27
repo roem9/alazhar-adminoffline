@@ -24,14 +24,10 @@ class Login extends CI_CONTROLLER{
         );
 
         $admin = $this->Main_model->get_one("admin", $where);
-        $cek = COUNT($admin);
 
-		if($cek > 0){
-            
-            $level = $admin['level'];
+		if($admin){
 
 			$data_session = array(
-				'level' => $level,
 				'status' => "login"
             );
  
@@ -46,7 +42,6 @@ class Login extends CI_CONTROLLER{
     }
 
     function logout(){
-        // $this->session->set_flashdata('login', 'Berhasil logout');
         $this->session->sess_destroy();
         redirect(base_url("login"));
     }

@@ -475,8 +475,8 @@ class Laporan extends CI_Controller {
             }
     
             $this->load->view("pages/laporan/cetak-absensi", $data);
+            // var_dump($data);
         }
-        // var_dump($data);
     }
 
     // public function angka_arab($data){

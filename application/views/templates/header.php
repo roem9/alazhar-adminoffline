@@ -97,7 +97,7 @@
                       <label for="tahun">Tahun</label>
                       <select name="tahun" class="form-control form-control-sm" required>
                           <option value="">Pilih Tahun</option>
-                          <option value="2020">2020</option>
+                          <!-- <option value="2020">2020</option> -->
                           <option value="2021">2021</option>
                           <option value="2022">2022</option>
                       </select>
