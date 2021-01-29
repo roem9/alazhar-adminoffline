@@ -428,7 +428,7 @@ class Syahadah extends CI_Controller {
         $defaultFontConfig = (new Mpdf\Config\FontVariables())->getDefaults();
         $fontData = $defaultFontConfig['fontdata'];
 
-        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [210, 330], 'orientation' => 'P', 'margin_left' => '0', 'margin_right' => '0', 'margin_top' => '0', 'margin_bottom' => '0', 'fontDir' => array_merge($fontDirs, [__DIR__ . '/assets/font',]),
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [210, 297], 'orientation' => 'P', 'margin_left' => '0', 'margin_right' => '0', 'margin_top' => '0', 'margin_bottom' => '0', 'fontDir' => array_merge($fontDirs, [__DIR__ . '/assets/font',]),
         'fontdata' => $fontData + [
             'arab' => [
                 'R' => 'trado.ttf',

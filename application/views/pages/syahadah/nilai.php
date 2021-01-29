@@ -15,8 +15,9 @@
 
         .kiri1{
             position: absolute;
-            color: #016433;
-            top: 350px;
+            /* color: #016433; */
+            color: #1c9444;
+            top: 410px;
             right: 226px;
             /* background: red; */
             width: 170px;
@@ -25,8 +26,9 @@
         
         .kiri2{
             position: absolute;
-            color: #016433;
-            top: 387px;
+            /* color: #016433; */
+            color: #1c9444;
+            top: 447px;
             right: 226px;
             /* background: blue; */
             width: 170px;
@@ -35,8 +37,9 @@
         
         .kiri3{
             position: absolute;
-            color: #016433;
-            top: 424px;
+            /* color: #016433; */
+            color: #1c9444;
+            top: 488px;
             right: 226px;
             /* background: red; */
             width: 170px;
@@ -45,8 +48,9 @@
         
         .kiri3toafl{
             position: absolute;
-            color: #016433;
-            top: 432px;
+            /* color: #016433; */
+            color: #1c9444;
+            top: 495px;
             right: 226px;
             /* background: red; */
             width: 170px;
@@ -55,8 +59,9 @@
         
         .kanan1{
             position: absolute;
-            color: #016433;
-            top: 350px;
+            /* color: #016433; */
+            color: #1c9444;
+            top: 410px;
             right: 396px;
             /* background: red; */
             width: 170px;
@@ -65,8 +70,9 @@
         
         .kanan2{
             position: absolute;
-            color: #016433;
-            top: 387px;
+            /* color: #016433; */
+            color: #1c9444;
+            top: 447px;
             right: 396px;
             /* background: blue; */
             width: 170px;
@@ -75,8 +81,9 @@
         
         .kanan3{
             position: absolute;
-            color: #016433;
-            top: 424px;
+            /* color: #016433; */
+            color: #1c9444;
+            top: 488px;
             right: 396px;
             /* background: red; */
             width: 170px;

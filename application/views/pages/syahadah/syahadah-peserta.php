@@ -20,7 +20,7 @@
             /* top: 520px; */
             /* font-family: 'mcs'; */
             color: red;
-            top: 510px;
+            top: 495px;
         }
 
         .ttl {
@@ -90,8 +90,8 @@
 
         .tgl_selesai {
             position: absolute;
-            font-size: 16px;
-            top: 855px;
+            font-size: 18px;
+            top: 853px;
             left: 200;
             /* background: red; */
             width: 120px;
@@ -99,7 +99,7 @@
         
         .tgl_selesai2 {
             position: absolute;
-            font-size: 16px;
+            font-size: 18px;
             top: 875px;
             left: 200;
             /* background: red; */
@@ -109,15 +109,15 @@
     </style>
 </head>
 <body lang="ar">
-    <img src="<?= base_url()?>assets/img/sertifikat.jpg" alt="" srcset="">
+    <!-- <img src="<?= base_url()?>assets/img/sertifikat.jpg" alt="" srcset=""> -->
     <div class="nama">
-        <p style="text-align: center; font-size: 30px"><strong><?= $peserta['nama_arab']?></strong></p>
+        <p style="text-align: center; font-size: 40px"><strong><?= $peserta['nama_arab']?></strong></p>
     </div>
     <div class="ttl">
         <p style="text-align: center; font-size: 26px"><strong><?= $peserta['t4_lahir_arab'] . "، " . $peserta['tgl_lahir']?></strong></p>
     </div>
     <div class="alamat">
-        <p style="text-align: center; font-size: 24px"><?= $peserta['desa_kel_arab']."، ".$peserta['kec_arab']."، ".$peserta['kota_kab_arab'];?></p>
+        <p style="text-align: center; font-size: 26px"><?= $peserta['desa_kel_arab']."، ".$peserta['kec_arab']."، ".$peserta['kota_kab_arab'];?></p>
     </div>
     <div class="pr1">
         <div style="text-align: center; font-size: 24px">قد اشترك الدراسة العربية <strong>"<?= $peserta['syahadah']['program_arab'];?>"</strong> <span style="font-size: 1px">ش</span></div>
