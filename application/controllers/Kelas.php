@@ -58,6 +58,7 @@ class Kelas extends CI_CONTROLLER{
             if($kelas->status == "aktif") $row[] = '<a href="javascript:void(0)" class="btn btn-sm btn-outline-success" data-id="'.$kelas->id_kelas.'|'.$kelas->nama_kelas.'|menonaktifkan" id="btnStatusKelas">aktif</a>';
             else $row[] = '<a href="javascript:void(0)" class="btn btn-sm btn-outline-secondary" data-id="'.$kelas->id_kelas.'|'.$kelas->nama_kelas.'|mengaktifkan" id="btnStatusKelas">nonaktif</a>';
             $row[] = date("d-m-Y", strtotime($kelas->tgl_mulai));
+            $row[] = date("d-m-Y", strtotime($kelas->tgl_cetak));
             $row[] = $kelas->nama_kelas;
             $row[] = $kelas->program;
             $row[] = '<center><a href="#modalEdit" data-toggle="modal" data-id="'.$kelas->id_kelas.'" class="btn btn-sm btn-outline-dark peserta">' . COUNT($this->Main_model->get_all("kelas_peserta", ["id_kelas" => $kelas->id_kelas])) . '</a></center>';
@@ -125,6 +126,7 @@ class Kelas extends CI_CONTROLLER{
                 "nama_kelas" => $this->input->post("nama_kelas"),
                 "program" => $this->input->post("program"),
                 "tgl_mulai" => $this->input->post("tgl_mulai"),
+                "tgl_cetak" => $this->input->post("tgl_cetak"),
                 "tgl_selesai" => $this->input->post("tgl_selesai"),
             ];
             $this->Main_model->edit_data("kelas", ["id_kelas" => $id], $data);
@@ -184,6 +186,7 @@ class Kelas extends CI_CONTROLLER{
                 "program" => $this->input->post("program"),
                 "tgl_mulai" => $this->input->post("tgl_mulai"),
                 "tgl_selesai" => $this->input->post("tgl_selesai"),
+                "tgl_cetak" => $this->input->post("tgl_cetak"),
                 "status" => "aktif",
             ];
             

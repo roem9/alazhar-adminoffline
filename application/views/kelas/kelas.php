@@ -16,17 +16,18 @@
                     </div>
                 </div>
             </div>
-            <div class="card shadow mb-4" style="max-width: 1000px">
+            <div class="card shadow mb-4" style="max-width: 1100px">
                 <div class="card-body">
                     <div id="reload">
                         <table id="dataTable" class="table table-sm cus-font">
                             <thead>
                                 <tr>
                                     <th style="width: 3%">No</th>
-                                    <th style="width: 9%">Status</th>
-                                    <th style="width: 12%">Tgl. Mulai</th>
+                                    <th style="width: 6%">Status</th>
+                                    <th style="width: 9%">Tgl. Mulai</th>
+                                    <th style="width: 9%">Tgl. Cetak</th>
                                     <th>Nama Kelas</th>
-                                    <th style="width: 20%"><center>Program</center></th>
+                                    <th style="width: 17%"><center>Program</center></th>
                                     <th style="width: 5%">Peserta</th>
                                     <th style="width: 5%">Wl</th>
                                     <th style="width: 5%">Detail</th>
@@ -98,6 +99,10 @@
                                         <div class="form-group">
                                             <label for="tgl_selesai">Tgl. Selesai</label>
                                             <input type="date" name="tgl_selesai" id="tgl_selesai_edit" class="form-control form-control-sm">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="tgl_cetak">Tgl. Cetak Syahadah</label>
+                                            <input type="date" name="tgl_cetak" id="tgl_cetak_edit" class="form-control form-control-sm">
                                         </div>
                                         <div class="d-flex justify-content-end">
                                             <input type="submit" value="Ubah Data" class="btn btn-sm btn-success" id="btnEdit">
@@ -177,8 +182,8 @@
                         <input type="date" name="tgl_selesai" id="tgl_selesai_add" class="form-control form-control-sm" required>
                     </div>
                     <div class="form-group">
-                        <label for="nama_kelas">Nama Kelas</label>
-                        <input type="text" name="nama_kelas" id="nama_kelas_add" class="form-control form-control-sm" required>
+                        <label for="tgl_cetak">Tgl. Cetak Syahadah</label>
+                        <input type="date" name="tgl_cetak" id="tgl_cetak_add" class="form-control form-control-sm" required>
                     </div>
                     <div class="form-group">
                         <label for="program">Program</label>
@@ -188,6 +193,10 @@
                                 <option value="<?= $data['program']?>"><?= $data['program']?></option>
                             <?php endforeach;?>
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="nama_kelas">Nama Kelas</label>
+                        <input type="text" name="nama_kelas" id="nama_kelas_add" class="form-control form-control-sm" required>
                     </div>
                     <div class="d-flex justify-content-end">
                         <input type="submit" value="Tambah Kelas" class="btn btn-sm btn-primary" id="btnModalAdd">
@@ -219,7 +228,7 @@
         //Set column definition initialisation properties.
         "columnDefs": [
         { 
-            "targets": [0, 5, 6, 7], //first column / numbering column
+            "targets": [0, 6, 7, 8, 9], //first column / numbering column
             "orderable": false, //set not orderable
         },
         ],
@@ -229,15 +238,21 @@
         if(confirm("Yakin akan menambahkan kelas baru?")){
             var tgl_mulai = $("#tgl_mulai_add").val();
             var tgl_selesai = $("#tgl_selesai_add").val();
+            var tgl_cetak = $("#tgl_cetak_add").val();
             var nama_kelas = $("#nama_kelas_add").val();
             var program = $("#program_add").val();
             $.ajax({
                 type : "POST",
                 url : "<?= base_url()?>kelas/add_kelas",
                 dataType : "JSON",
-                data : {tgl_mulai : tgl_mulai,tgl_selesai : tgl_selesai,nama_kelas : nama_kelas,program : program},
+                data : {tgl_mulai : tgl_mulai,tgl_selesai : tgl_selesai,tgl_cetak : tgl_cetak,nama_kelas : nama_kelas,program : program},
                 success : function(data){
                     $("#formAdd").trigger("reset");
+                    
+                    $("#tgl_mulai_add").val(tgl_mulai);
+                    $("#tgl_selesai_add").val(tgl_selesai);
+                    $("#tgl_cetak_add").val(tgl_cetak);
+                    
                     var msg = `
                             <div class="alert alert-success alert-dismissible fade show" role="alert"><i class="fa fa-check-circle text-success mr-1"></i> Berhasil menambahkan kelas baru<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`;
                     $('.msg-add-data').html(msg);
@@ -256,12 +271,13 @@
             var program = $("#program_edit").val();
             var tgl_mulai = $("#tgl_mulai_edit").val();
             var tgl_selesai = $("#tgl_selesai_edit").val();
+            var tgl_cetak = $("#tgl_cetak_edit").val();
             var id_civitas = $("#id_civitas_edit").val();
             $.ajax({
                 type : "POST",
                 url : "<?= base_url()?>kelas/edit_kelas",
                 dataType : "JSON",
-                data : {id_kelas : id,nama_kelas : nama_kelas,program : program,tgl_mulai : tgl_mulai,tgl_selesai : tgl_selesai,id_civitas : id_civitas},
+                data : {id_kelas : id,nama_kelas : nama_kelas,program : program,tgl_mulai : tgl_mulai,tgl_selesai : tgl_selesai,tgl_cetak : tgl_cetak,id_civitas : id_civitas},
                 success : function(data){
                     // $("#modalEditTitle").html(nama)
                     var msg = `
@@ -409,6 +425,7 @@
                     $("#program_edit").val(data.program);
                     $("#tgl_mulai_edit").val(data.tgl_mulai)
                     $("#tgl_selesai_edit").val(data.tgl_selesai)
+                    $("#tgl_cetak_edit").val(data.tgl_cetak)
 
                     let html = "";
 

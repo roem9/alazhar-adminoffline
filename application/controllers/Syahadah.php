@@ -21,7 +21,8 @@ class Syahadah extends CI_Controller {
     public function kelas($id_kelas){
         $peserta = $this->Main_model->get_all("kelas_peserta", ["MD5(id_kelas)" => $id_kelas, "no_syahadah != " => 0]);
         $data['kelas'] = $this->Main_model->get_one("kelas", ["MD5(id_kelas)" => $id_kelas]);
-        $data['kelas']['tgl_selesai_hijriah'] = $this->tgl_hijriah($data['kelas']['tgl_selesai']);
+        $data['kelas']['tgl_cetak_sertifikat'] = $this->tgl_masehi($data['kelas']['tgl_cetak']);
+        $data['kelas']['tgl_cetak_sertifikat_hijriah'] = $this->tgl_hijriah($data['kelas']['tgl_cetak']);
         $data['kelas']['tgl_mulai'] = $this->tgl_masehi($data['kelas']['tgl_mulai']);
         $data['kelas']['tgl_selesai'] = $this->tgl_masehi($data['kelas']['tgl_selesai']);
         foreach ($peserta as $i => $peserta) {
@@ -248,7 +249,8 @@ class Syahadah extends CI_Controller {
         $data['peserta']['syahadah'] = $peserta;
         $data['peserta']['syahadah']['nomor'] = $this->angka_arab($peserta['no_syahadah'])."/أز/".$this->angka_arab($peserta['tahun']);
         $data['kelas'] = $this->Main_model->get_one("kelas", ["id_kelas" => $peserta['id_kelas']]);
-        $data['kelas']['tgl_selesai_hijriah'] = $this->tgl_hijriah($data['kelas']['tgl_selesai']);
+        $data['kelas']['tgl_cetak_sertifikat'] = $this->tgl_masehi($data['kelas']['tgl_cetak']);
+        $data['kelas']['tgl_cetak_sertifikat_hijriah'] = $this->tgl_hijriah($data['kelas']['tgl_cetak']);
         $data['kelas']['tgl_mulai'] = $this->tgl_masehi($data['kelas']['tgl_mulai']);
         $data['kelas']['tgl_selesai'] = $this->tgl_masehi($data['kelas']['tgl_selesai']);
 
@@ -434,12 +436,6 @@ class Syahadah extends CI_Controller {
                 'R' => 'trado.ttf',
                 'useOTL' => 0xFF,
                 'useKashida' => 75,
-            ],
-            'mcs' => [
-                'R' => 'MCS-Erwah-S_U-normal..ttf',
-                // mcs_erwah.ttf
-                // 'useOTL' => 0xFF,
-                // 'useKashida' => 75,
             ]
         ], 
         ]);

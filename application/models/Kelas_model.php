@@ -3,8 +3,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  
 class Kelas_model extends CI_Model { 
     var $table = 'kelas';
-    var $column_order = array(null,'status','tgl_mulai','nama_kelas','program',null,null); //set column field database for datatable orderable
-    var $column_search = array('status','tgl_mulai','nama_kelas','program'); //set column field database for datatable searchable 
+    var $column_order = array(null,'status','tgl_mulai','tgl_cetak','nama_kelas','program',null,null); //set column field database for datatable orderable
+    var $column_search = array('status','tgl_mulai','tgl_cetak','nama_kelas','program'); //set column field database for datatable searchable 
     var $order = array('tgl_input' => 'desc'); // default order 
  
     public function __construct()

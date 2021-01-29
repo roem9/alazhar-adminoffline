@@ -82,7 +82,7 @@
 
         .pr7 {
             position: absolute;
-            width: 120px;
+            width: 150px;
             /* background: red; */
             top: 863px;
             left: 200px;
@@ -94,7 +94,7 @@
             top: 853px;
             left: 200;
             /* background: red; */
-            width: 120px;
+            width: 150px;
         }
         
         .tgl_selesai2 {
@@ -102,8 +102,8 @@
             font-size: 18px;
             top: 875px;
             left: 200;
-            /* background: red; */
-            width: 120px;
+            /* background: green; */
+            width: 150px;
         }
 
     </style>
@@ -120,13 +120,21 @@
         <p style="text-align: center; font-size: 26px"><?= $peserta['desa_kel_arab']."، ".$peserta['kec_arab']."، ".$peserta['kota_kab_arab'];?></p>
     </div>
     <div class="pr1">
-        <div style="text-align: center; font-size: 24px">قد اشترك الدراسة العربية <strong>"<?= $peserta['syahadah']['program_arab'];?>"</strong> <span style="font-size: 1px">ش</span></div>
+        <?php if($peserta['jk'] == "Laki-Laki") :?>
+            <div style="text-align: center; font-size: 24px">قد اشترك الدراسة العربية <strong>"<?= $peserta['syahadah']['program_arab'];?>"</strong> <span style="font-size: 1px">ش</span></div>
+        <?php else :?>
+            <div style="text-align: center; font-size: 24px">قد اشتركت الدراسة العربية <strong>"<?= $peserta['syahadah']['program_arab'];?>"</strong> <span style="font-size: 1px">ش</span></div>
+        <?php endif;?>
     </div>
     <div class="pr2">
         <div style="text-align: center; font-size: 22px">التي قام بها تعليم اللغة العربية الدورى <strong>"الأزهار"</strong> <span style="font-size: 1px">ش</span></div>
     </div>
     <div class="pr3">
-        <div style="text-align: center; font-size: 22px"><i>من <?= $kelas['tgl_mulai']?>م - <?= $kelas['tgl_selesai']?>م.</i> و أن له حسب نتائج اختباره</div>
+        <?php if($peserta['jk'] == "Laki-Laki") :?>
+            <div style="text-align: center; font-size: 22px"><i>من <?= $kelas['tgl_mulai']?>م - <?= $kelas['tgl_selesai']?>م.</i> و أن له حسب نتائج اختباره</div>
+        <?php else :?>
+            <div style="text-align: center; font-size: 22px"><i>من <?= $kelas['tgl_mulai']?>م - <?= $kelas['tgl_selesai']?>م.</i> وأن لها حسب نتائج اختبارها</div>
+        <?php endif;?>
     </div>
     <div class="pr4">
         <div style="text-align: center; font-size: 22px">الشفوية و التحريرية نجاحا بتقدير عام : <i><u><b><?= $peserta['syahadah']['nilai']?></b></u></i></div>
@@ -141,21 +149,10 @@
         <hr class="garis" style="color: black">
     </div>
     <div class="tgl_selesai">
-        <div style="text-align: center"><b><?= $kelas['tgl_selesai'];?>م</b></div>
+        <div style="text-align: center"><b><?= $kelas['tgl_cetak_sertifikat'];?>م</b></div>
     </div>
     <div class="tgl_selesai2">
-        <div style="text-align: center"><b><?= $kelas['tgl_selesai_hijriah'];?></b></div>
+        <div style="text-align: center"><b><?= $kelas['tgl_cetak_sertifikat_hijriah'];?></b></div>
     </div>
-
-
 </body>
 </html>
-
-
-
-
-
-
-<!-- INSERT INTO `nilai_peserta` (`id`, `id_kelas`, `id_peserta`, `pelajaran`, `nilai`, `tgl_input`) VALUES (NULL, '7', '30', 'Fahmul Qowaid', '88', '2021-01-05 09:13:53'), (NULL, '7', '29', 'Fahmul Qowaid', '90', '2021-01-05 09:13:53'), (NULL, '7', '28', 'Fahmul Qowaid', '100', '2021-01-05 09:13:53'), (NULL, '7', '31', 'Fahmul Qowaid', '100', '2021-01-05 09:13:53'), (NULL, '7', '32', 'Fahmul Qowaid', '100', '2021-01-05 09:13:53');
-
-INSERT INTO `nilai_peserta` (`id`, `id_kelas`, `id_peserta`, `pelajaran`, `nilai`, `tgl_input`) VALUES (NULL, '7', '30', "Adad Ma'dud", '88', '2021-01-05 09:13:53'), (NULL, '7', '29', "Adad Ma'dud", '90', '2021-01-05 09:13:53'), (NULL, '7', '28', "Adad Ma'dud", '100', '2021-01-05 09:13:53'), (NULL, '7', '31', "Adad Ma'dud", '100', '2021-01-05 09:13:53'), (NULL, '7', '32', "Adad Ma'dud", '100', '2021-01-05 09:13:53'); -->

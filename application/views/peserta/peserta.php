@@ -203,7 +203,7 @@
                         <div id="form-3">
                             <form id="formAddKelas">
                                 <div class="msgAddKelas"></div>
-                                <div class="alert alert-info"><i class="fa fa-info-circle text-info"></i> apabila kelas dikosongkan maka akan masuk waiting list</div>
+                                <!-- <div class="alert alert-info"><i class="fa fa-info-circle text-info"></i> apabila kelas dikosongkan maka akan masuk waiting list</div> -->
                                 <div class="form-group">
                                     <label for="detail_pembayaran">Detail Pembayaran</label>
                                     <textarea name="detail_pembayaran" id="detail_pembayaran_wl" class="form-control form-control-sm" readonly></textarea>
@@ -216,15 +216,6 @@
                                 <?php endif;?>
                                 <input type="hidden" name="id_peserta">
                                 <div class="form-group">
-                                    <label for="kelas">Kelas</label>
-                                    <select name="id_kelas" id="id_kelas_add" class="form-control form-control-sm">
-                                        <option value="">Pilih Kelas</option>
-                                        <?php foreach ($kelas as $data) :?>
-                                            <option value="<?= $data['id_kelas']?>"><?= $data['nama_kelas']?></option>
-                                        <?php endforeach;?>
-                                    </select>
-                                </div>
-                                <div class="form-group">
                                     <label for="program_add">Program</label>
                                     <select name="program_add" id="program_add" class="form-control form-control-sm" required>
                                         <option value="">Pilih Program</option>
@@ -232,6 +223,16 @@
                                             <option value="<?= $data['program']?>"><?= $data['program']?></option>
                                         <?php endforeach;?>
                                     </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kelas">Kelas</label>
+                                    <select name="id_kelas" id="id_kelas_add" class="form-control form-control-sm">
+                                        <option value="">Pilih Kelas</option>
+                                        <?php foreach ($kelas as $data) :?>
+                                            <option value="<?= $data['id_kelas']?>"><?= $data['nama_kelas']?></option>
+                                        <?php endforeach;?>
+                                    </select>
+                                    <small id="emailHelp" class="form-text text-danger">*apabila kelas dikosongkan maka peserta akan masuk waiting list</small>
                                 </div>
                                 <div class="form-group">
                                     <label for="periode_add">Periode</label>
