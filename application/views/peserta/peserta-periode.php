@@ -476,6 +476,8 @@
                         finish = 1;
                     },
                 })
+            } else {
+                finish = 1;
             }
         }
         
