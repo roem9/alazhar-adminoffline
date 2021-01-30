@@ -432,44 +432,53 @@
         ],
     });
 
-    $("#formAdd").submit(function(){
-        if(confirm("Yakin akan menambahkan peserta baru?")){
-            let tgl_daftar = $('#tgl_daftar_add').val()
-            let nik = $('#nik_add').val()
-            let nama_indo = $('#nama_indo_add').val()
-            let nama_arab = $('#nama_arab_add').val()
-            let t4_lahir_indo = $('#t4_lahir_indo_add').val()
-            let t4_lahir_arab = $('#t4_lahir_arab_add').val()
-            let tgl_lahir = $('#tgl_lahir_add').val()
-            let jk = $('#jk_add').val()
-            let desa_kel_indo = $('#desa_kel_indo_add').val()
-            let desa_kel_arab = $('#desa_kel_arab_add').val()
-            let kec_indo = $('#kec_indo_add').val()
-            let kec_arab = $('#kec_arab_add').val()
-            let kota_kab_indo = $('#kota_kab_indo_add').val()
-            let kota_kab_arab = $('#kota_kab_arab_add').val()
-            let no_wa = $('#no_wa_add').val()
-            let pembayaran = $('#pembayaran_add').val()
-            let detail_pembayaran = $('#detail_pembayaran_add').val()
-            let email = $('#email_add').val()
-            let program = $('#program_add_belajar').val()
-            let periode = $('#periode_belajar').val()
+    // untuk menghindari input double ajax 
+    var finish = 1;
 
-            $.ajax({
-                type : "POST",
-                url : "<?= base_url()?>peserta/add_peserta",
-                dataType : "JSON",
-                data : {tgl_daftar: tgl_daftar,nik: nik,nama_indo: nama_indo,nama_arab: nama_arab,t4_lahir_indo: t4_lahir_indo,t4_lahir_arab: t4_lahir_arab,tgl_lahir: tgl_lahir,jk:jk,desa_kel_indo: desa_kel_indo,desa_kel_arab: desa_kel_arab,kec_indo: kec_indo,kec_arab: kec_arab,kota_kab_indo: kota_kab_indo,kota_kab_arab: kota_kab_arab,no_wa: no_wa,pembayaran: pembayaran,detail_pembayaran: detail_pembayaran,email: email, program:program, periode:periode},
-                success : function(data){
-                    $("#formAdd").trigger("reset");
-                    var msg = `
-                            <div class="alert alert-success alert-dismissible fade show" role="alert"><i class="fa fa-check-circle text-success mr-1"></i> Berhasil menambahkan peserta baru<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`;
-                    $('.msg-add-data').html(msg);
-                    $("#modal-add").scrollTop(0);
-                    reload_table();
-                },
-            })
+    $("#formAdd").submit(function(){
+        if(finish == 1){
+            finish = 2;
+            if(confirm("Yakin akan menambahkan peserta baru?")){
+                let tgl_daftar = $('#tgl_daftar_add').val()
+                let nik = $('#nik_add').val()
+                let nama_indo = $('#nama_indo_add').val()
+                let nama_arab = $('#nama_arab_add').val()
+                let t4_lahir_indo = $('#t4_lahir_indo_add').val()
+                let t4_lahir_arab = $('#t4_lahir_arab_add').val()
+                let tgl_lahir = $('#tgl_lahir_add').val()
+                let jk = $('#jk_add').val()
+                let desa_kel_indo = $('#desa_kel_indo_add').val()
+                let desa_kel_arab = $('#desa_kel_arab_add').val()
+                let kec_indo = $('#kec_indo_add').val()
+                let kec_arab = $('#kec_arab_add').val()
+                let kota_kab_indo = $('#kota_kab_indo_add').val()
+                let kota_kab_arab = $('#kota_kab_arab_add').val()
+                let no_wa = $('#no_wa_add').val()
+                let pembayaran = $('#pembayaran_add').val()
+                let detail_pembayaran = $('#detail_pembayaran_add').val()
+                let email = $('#email_add').val()
+                let program = $('#program_add_belajar').val()
+                let periode = $('#periode_belajar').val()
+
+                $.ajax({
+                    type : "POST",
+                    url : "<?= base_url()?>peserta/add_peserta",
+                    dataType : "JSON",
+                    data : {tgl_daftar: tgl_daftar,nik: nik,nama_indo: nama_indo,nama_arab: nama_arab,t4_lahir_indo: t4_lahir_indo,t4_lahir_arab: t4_lahir_arab,tgl_lahir: tgl_lahir,jk:jk,desa_kel_indo: desa_kel_indo,desa_kel_arab: desa_kel_arab,kec_indo: kec_indo,kec_arab: kec_arab,kota_kab_indo: kota_kab_indo,kota_kab_arab: kota_kab_arab,no_wa: no_wa,pembayaran: pembayaran,detail_pembayaran: detail_pembayaran,email: email, program:program, periode:periode},
+                    success : function(data){
+                        $("#formAdd").trigger("reset");
+                        var msg = `
+                                <div class="alert alert-success alert-dismissible fade show" role="alert"><i class="fa fa-check-circle text-success mr-1"></i> Berhasil menambahkan peserta baru<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>`;
+                        $('.msg-add-data').html(msg);
+                        $("#modal-add").scrollTop(0);
+                        reload_table();
+                        
+                        finish = 1;
+                    },
+                })
+            }
         }
+        
         return false;
     })
     
